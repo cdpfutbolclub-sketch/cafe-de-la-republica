@@ -22,6 +22,7 @@ test("renders all nav links", () => {
   expect(screen.getByRole("link", { name: /shop/i })).toBeInTheDocument();
   expect(screen.getByRole("link", { name: /menu/i })).toBeInTheDocument();
   expect(screen.getByRole("link", { name: /subscribe/i })).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: /about/i })).toBeInTheDocument();
 });
 
 test("renders cart button", () => {
