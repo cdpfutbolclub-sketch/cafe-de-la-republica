@@ -10,6 +10,38 @@ type Frequency = typeof FREQUENCIES[number];
 type Size      = typeof SIZES[number];
 type Choice    = typeof CHOICES[number];
 
+function PillGroup<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: readonly T[];
+  value: T;
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div role="group" aria-label={label} className="flex items-center justify-center gap-2 flex-wrap">
+      {options.map(opt => (
+        <button
+          key={opt}
+          onClick={() => onChange(opt)}
+          aria-pressed={value === opt}
+          className="font-sans text-[10px] tracking-widest uppercase px-5 py-2 rounded-full transition-all"
+          style={{
+            background: value === opt ? "var(--red)"        : "rgba(255,255,255,0.07)",
+            color:      value === opt ? "white"             : "rgba(200,169,138,0.8)",
+            border:     `1px solid ${value === opt ? "var(--red)" : "rgba(200,169,138,0.2)"}`,
+          }}
+        >
+          {opt}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function SubscriptionTeaser() {
   const [freq,   setFreq]   = useState<Frequency>("Monthly");
   const [size,   setSize]   = useState<Size>("250g");
@@ -27,59 +59,9 @@ export default function SubscriptionTeaser() {
         </p>
 
         <div className="flex flex-col gap-5 mb-10">
-          {/* Frequency */}
-          <div className="flex items-center justify-center gap-2 flex-wrap">
-            {FREQUENCIES.map(f => (
-              <button
-                key={f}
-                onClick={() => setFreq(f)}
-                className="font-sans text-[10px] tracking-widest uppercase px-5 py-2 rounded-full transition-all"
-                style={{
-                  background: freq === f ? "var(--red)"          : "rgba(255,255,255,0.07)",
-                  color:      freq === f ? "white"               : "rgba(200,169,138,0.8)",
-                  border:     `1px solid ${freq === f ? "var(--red)" : "rgba(200,169,138,0.2)"}`,
-                }}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-
-          {/* Size */}
-          <div className="flex items-center justify-center gap-2 flex-wrap">
-            {SIZES.map(s => (
-              <button
-                key={s}
-                onClick={() => setSize(s)}
-                className="font-sans text-[10px] tracking-widest uppercase px-5 py-2 rounded-full transition-all"
-                style={{
-                  background: size === s ? "var(--red)"          : "rgba(255,255,255,0.07)",
-                  color:      size === s ? "white"               : "rgba(200,169,138,0.8)",
-                  border:     `1px solid ${size === s ? "var(--red)" : "rgba(200,169,138,0.2)"}`,
-                }}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-
-          {/* Choice */}
-          <div className="flex items-center justify-center gap-2 flex-wrap">
-            {CHOICES.map(c => (
-              <button
-                key={c}
-                onClick={() => setChoice(c)}
-                className="font-sans text-[10px] tracking-widest uppercase px-5 py-2 rounded-full transition-all"
-                style={{
-                  background: choice === c ? "var(--red)"          : "rgba(255,255,255,0.07)",
-                  color:      choice === c ? "white"               : "rgba(200,169,138,0.8)",
-                  border:     `1px solid ${choice === c ? "var(--red)" : "rgba(200,169,138,0.2)"}`,
-                }}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
+          <PillGroup label="Frequency" options={FREQUENCIES} value={freq}   onChange={setFreq}   />
+          <PillGroup label="Size"      options={SIZES}       value={size}   onChange={setSize}   />
+          <PillGroup label="Choice"    options={CHOICES}     value={choice} onChange={setChoice} />
         </div>
 
         <Link
