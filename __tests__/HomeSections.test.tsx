@@ -11,6 +11,7 @@ import PromoStrip from "@/components/home/PromoStrip";
 import SubscriptionTeaser from "@/components/home/SubscriptionTeaser";
 import StorySection from "@/components/home/StorySection";
 import MenuPreview  from "@/components/home/MenuPreview";
+import LocationSection from "@/components/home/LocationSection";
 
 // ── FeaturedCoffees ───────────────────────────────
 
@@ -86,4 +87,21 @@ test("MenuPreview has a Full Menu link to /menu", () => {
   render(<MenuPreview />);
   const link = screen.getByRole("link", { name: /full menu/i });
   expect(link).toHaveAttribute("href", "/menu");
+});
+
+// ── LocationSection ───────────────────────────────
+
+test("LocationSection renders the address", () => {
+  render(<LocationSection />);
+  expect(screen.getByText(/Andorra/i)).toBeInTheDocument();
+});
+
+test("LocationSection renders hours", () => {
+  render(<LocationSection />);
+  expect(screen.getByText(/Mon/i)).toBeInTheDocument();
+});
+
+test("LocationSection renders contact email", () => {
+  render(<LocationSection />);
+  expect(screen.getByText(/caferepublica/i)).toBeInTheDocument();
 });
