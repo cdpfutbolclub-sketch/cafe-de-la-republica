@@ -1,6 +1,12 @@
-import Nav             from "@/components/layout/Nav";
-import SplitScreenHero from "@/components/home/SplitScreenHero";
-import Footer          from "@/components/layout/Footer";
+import Nav                 from "@/components/layout/Nav";
+import SplitScreenHero     from "@/components/home/SplitScreenHero";
+import FeaturedCoffees     from "@/components/home/FeaturedCoffees";
+import PromoStrip          from "@/components/home/PromoStrip";
+import SubscriptionTeaser  from "@/components/home/SubscriptionTeaser";
+import StorySection        from "@/components/home/StorySection";
+import MenuPreview         from "@/components/home/MenuPreview";
+import LocationSection     from "@/components/home/LocationSection";
+import Footer              from "@/components/layout/Footer";
 
 export default function HomePage() {
   return (
@@ -11,12 +17,12 @@ export default function HomePage() {
       </div>
 
       <main>
-        <div
-          className="h-64 flex items-center justify-center text-sm font-sans tracking-widest uppercase"
-          style={{ color: "var(--brown-light)", background: "var(--cream)" }}
-        >
-          Homepage sections — Plan 3
-        </div>
+        <FeaturedCoffees />
+        <PromoStrip />
+        <SubscriptionTeaser />
+        <StorySection />
+        <MenuPreview />
+        <LocationSection />
       </main>
 
       <Footer />
