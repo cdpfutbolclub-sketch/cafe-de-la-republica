@@ -6,19 +6,25 @@ export default function CartDrawer() {
   const isOpen     = useCartStore(s => s.isOpen);
   const closeCart  = useCartStore(s => s.closeCart);
   const removeItem = useCartStore(s => s.removeItem);
-  const total      = useCartStore(s => s.total);
-  const itemCount  = useCartStore(s => s.itemCount);
+  const itemCount  = useCartStore(s => s.items.reduce((n, i) => n + i.qty, 0));
+  const total      = useCartStore(s => s.items.reduce((sum, i) => sum + i.price * i.qty, 0));
 
   if (!isOpen) return null;
 
   const handleCheckout = async () => {
-    const res = await fetch("/api/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items }),
-    });
-    const { url } = await res.json();
-    window.location.href = url;
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+      if (!res.ok) throw new Error(`Checkout failed: ${res.status}`);
+      const { url } = await res.json();
+      if (!url) throw new Error("No redirect URL returned");
+      window.location.href = url;
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -45,7 +51,7 @@ export default function CartDrawer() {
           style={{ borderBottom: "1px solid rgba(200,169,138,0.3)" }}
         >
           <h2 className="font-serif text-[var(--brown)] text-lg">
-            Cart ({itemCount()})
+            Cart ({itemCount})
           </h2>
           <button
             onClick={closeCart}
@@ -96,7 +102,7 @@ export default function CartDrawer() {
                 Total
               </span>
               <span className="font-serif text-[var(--brown)] text-lg">
-                €{total().toFixed(2)}
+                €{total.toFixed(2)}
               </span>
             </div>
             <button

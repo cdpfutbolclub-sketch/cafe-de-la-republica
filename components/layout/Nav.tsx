@@ -11,7 +11,7 @@ const links = [
 ];
 
 export default function Nav() {
-  const itemCount = useCartStore(s => s.itemCount);
+  const itemCount = useCartStore(s => s.items.reduce((n, i) => n + i.qty, 0));
   const openCart  = useCartStore(s => s.openCart);
 
   return (
@@ -63,7 +63,7 @@ export default function Nav() {
         <div className="justify-self-end flex items-center gap-3">
           <LangToggle />
           <button
-            aria-label="cart"
+            aria-label={`Cart, ${itemCount} item${itemCount === 1 ? "" : "s"}`}
             onClick={openCart}
             className="text-white text-[10px] tracking-[0.2em] uppercase font-sans px-5 py-2.5 rounded-full transition-colors"
             style={{
@@ -73,7 +73,7 @@ export default function Nav() {
               boxShadow: "0 4px 16px rgba(192,57,43,0.3)",
             }}
           >
-            Cart ({itemCount()})
+            Cart ({itemCount})
           </button>
         </div>
       </nav>

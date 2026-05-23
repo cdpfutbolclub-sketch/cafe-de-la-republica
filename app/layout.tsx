@@ -14,8 +14,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <LangProvider>
           {children}
+          <CartDrawer />
         </LangProvider>
-        <CartDrawer />
       </body>
     </html>
   );
