@@ -14,7 +14,7 @@ jest.mock("next/link", () => {
   return MockLink;
 });
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import SplitScreenHero from "@/components/home/SplitScreenHero";
 
 test("renders 8 navigation dots", () => {
@@ -38,4 +38,25 @@ test("renders up and down arrow navigation buttons", () => {
   render(<SplitScreenHero />);
   expect(screen.getByRole("button", { name: /previous/i })).toBeInTheDocument();
   expect(screen.getByRole("button", { name: /next/i })).toBeInTheDocument();
+});
+
+test("clicking Next button advances to Colombia (slide 2)", () => {
+  render(<SplitScreenHero />);
+  fireEvent.click(screen.getByRole("button", { name: /next/i }));
+  expect(screen.getByText(/Colombia/i)).toBeInTheDocument();
+  expect(screen.getByText(/Smooth & Balanced/i)).toBeInTheDocument();
+});
+
+test("clicking Previous from slide 0 wraps to House Blend", () => {
+  render(<SplitScreenHero />);
+  fireEvent.click(screen.getByRole("button", { name: /previous/i }));
+  expect(screen.getByText(/La Republica/i)).toBeInTheDocument();
+  expect(screen.getByText(/Our Signature/i)).toBeInTheDocument();
+});
+
+test("clicking Kenya dot navigates directly to Kenya slide", () => {
+  render(<SplitScreenHero />);
+  fireEvent.click(screen.getByRole("button", { name: /Kenya coffee/i }));
+  expect(screen.getByText(/Bold & Fruity/i)).toBeInTheDocument();
+  expect(screen.getByText(/15\.00/)).toBeInTheDocument();
 });
