@@ -40,3 +40,15 @@ test("itemCount sums all quantities", () => {
   useCartStore.getState().addItem({ id: "ethiopia", name: "Floral & Bright", origin: "Ethiopia", price: 14.50 });
   expect(useCartStore.getState().itemCount()).toBe(2);
 });
+
+test("updateQty changes item quantity in place", () => {
+  useCartStore.getState().addItem({ id: "ethiopia", name: "Floral & Bright", origin: "Ethiopia", price: 14.50 });
+  useCartStore.getState().updateQty("ethiopia", 3);
+  expect(useCartStore.getState().items[0].qty).toBe(3);
+});
+
+test("updateQty with qty <= 0 removes the item", () => {
+  useCartStore.getState().addItem({ id: "ethiopia", name: "Floral & Bright", origin: "Ethiopia", price: 14.50 });
+  useCartStore.getState().updateQty("ethiopia", 0);
+  expect(useCartStore.getState().items).toHaveLength(0);
+});
