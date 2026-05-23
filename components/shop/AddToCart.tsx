@@ -5,13 +5,13 @@ import type { Coffee } from "@/lib/coffeeData";
 
 export default function AddToCart({ coffee }: { coffee: Coffee }) {
   const [qty, setQty] = useState(1);
-  const addItem  = useCartStore(s => s.addItem);
+  const addItem = useCartStore(s => s.addItem);
+  const updateQty = useCartStore(s => s.updateQty);
   const openCart = useCartStore(s => s.openCart);
 
   const handleAdd = () => {
-    for (let i = 0; i < qty; i++) {
-      addItem({ id: coffee.id, name: coffee.name, origin: coffee.origin, price: coffee.price });
-    }
+    addItem({ id: coffee.id, name: coffee.name, origin: coffee.origin, price: coffee.price });
+    if (qty > 1) updateQty(coffee.id, qty);
     openCart();
   };
 
@@ -41,6 +41,7 @@ export default function AddToCart({ coffee }: { coffee: Coffee }) {
       </div>
       <button
         onClick={handleAdd}
+        aria-label={`Add ${qty} ${coffee.name} to cart — €${(coffee.price * qty).toFixed(2)}`}
         className="flex-1 font-sans text-[10px] tracking-widest uppercase py-3 rounded-full text-white transition-opacity hover:opacity-85"
         style={{ background: "var(--red)" }}
       >
