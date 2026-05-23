@@ -9,6 +9,8 @@ import { render, screen } from "@testing-library/react";
 import FeaturedCoffees from "@/components/home/FeaturedCoffees";
 import PromoStrip from "@/components/home/PromoStrip";
 import SubscriptionTeaser from "@/components/home/SubscriptionTeaser";
+import StorySection from "@/components/home/StorySection";
+import MenuPreview  from "@/components/home/MenuPreview";
 
 // ── FeaturedCoffees ───────────────────────────────
 
@@ -57,4 +59,31 @@ test("SubscriptionTeaser has a CTA link to /subscribe", () => {
   render(<SubscriptionTeaser />);
   const link = screen.getByRole("link", { name: /subscribe|start/i });
   expect(link).toHaveAttribute("href", "/subscribe");
+});
+
+// ── StorySection ──────────────────────────────────
+
+test("StorySection renders the story heading", () => {
+  render(<StorySection />);
+  expect(screen.getByText("Our Story")).toBeInTheDocument();
+});
+
+test("StorySection has a Read Our Story link", () => {
+  render(<StorySection />);
+  const link = screen.getByRole("link", { name: /read our story/i });
+  expect(link).toHaveAttribute("href", "/#story");
+});
+
+// ── MenuPreview ───────────────────────────────────
+
+test("MenuPreview renders 4 menu item cards", () => {
+  render(<MenuPreview />);
+  const items = screen.getAllByRole("listitem");
+  expect(items.length).toBe(4);
+});
+
+test("MenuPreview has a Full Menu link to /menu", () => {
+  render(<MenuPreview />);
+  const link = screen.getByRole("link", { name: /full menu/i });
+  expect(link).toHaveAttribute("href", "/menu");
 });
