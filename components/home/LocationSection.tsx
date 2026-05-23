@@ -10,7 +10,7 @@ export default function LocationSection() {
         <div className="grid grid-cols-3 gap-10">
           {/* Address */}
           <div>
-            <h4 className="eyebrow text-[var(--brown-light)] mb-4">Location</h4>
+            <h3 className="eyebrow text-[var(--brown-light)] mb-4">Location</h3>
             <p className="text-white font-serif text-base mb-1">Cafe de la Republica</p>
             <p className="text-[var(--brown-light)] text-[13px] leading-relaxed">
               Carrer de la Unió, 7<br />
@@ -21,7 +21,7 @@ export default function LocationSection() {
 
           {/* Hours */}
           <div>
-            <h4 className="eyebrow text-[var(--brown-light)] mb-4">Hours</h4>
+            <h3 className="eyebrow text-[var(--brown-light)] mb-4">Hours</h3>
             <dl className="space-y-1">
               {[
                 { day: "Mon – Fri", hours: "7:00 – 19:00" },
@@ -38,7 +38,7 @@ export default function LocationSection() {
 
           {/* Contact */}
           <div>
-            <h4 className="eyebrow text-[var(--brown-light)] mb-4">Contact</h4>
+            <h3 className="eyebrow text-[var(--brown-light)] mb-4">Contact</h3>
             <ul className="space-y-2 text-[13px]">
               <li>
                 <a
