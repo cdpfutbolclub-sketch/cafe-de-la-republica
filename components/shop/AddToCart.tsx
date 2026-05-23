@@ -10,8 +10,10 @@ export default function AddToCart({ coffee }: { coffee: Coffee }) {
   const openCart = useCartStore(s => s.openCart);
 
   const handleAdd = () => {
+    const existing = useCartStore.getState().items.find(i => i.id === coffee.id);
+    const targetQty = (existing?.qty ?? 0) + qty;
     addItem({ id: coffee.id, name: coffee.name, origin: coffee.origin, price: coffee.price });
-    if (qty > 1) updateQty(coffee.id, qty);
+    if (targetQty > 1) updateQty(coffee.id, targetQty);
     openCart();
   };
 

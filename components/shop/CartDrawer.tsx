@@ -21,6 +21,7 @@ export default function CartDrawer() {
       if (!res.ok) throw new Error(`Checkout failed: ${res.status}`);
       const { url } = await res.json();
       if (!url) throw new Error("No redirect URL returned");
+      useCartStore.getState().clearCart();
       window.location.href = url;
     } catch (err) {
       console.error(err);

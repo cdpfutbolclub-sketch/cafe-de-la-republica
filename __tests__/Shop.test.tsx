@@ -58,4 +58,15 @@ describe("AddToCart", () => {
     expect(useCartStore.getState().items[0].id).toBe("ethiopia");
     expect(useCartStore.getState().items[0].qty).toBe(1);
   });
+
+  test("AddToCart accumulates quantity when item already in cart", () => {
+    useCartStore.setState({
+      items: [{ id: "ethiopia", name: "Floral & Bright", origin: "Ethiopia", price: 14.50, qty: 2 }],
+      isOpen: false,
+    });
+    render(<AddToCart coffee={ethiopia} />);
+    // qty starts at 1 (useState default), clicking add should result in 2+1=3
+    fireEvent.click(screen.getByRole("button", { name: /Add \d+ .+ to cart/i }));
+    expect(useCartStore.getState().items[0].qty).toBe(3);
+  });
 });
