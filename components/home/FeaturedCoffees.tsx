@@ -6,7 +6,7 @@ const FEATURED = [
     origin: "Ethiopia", region: "Yirgacheffe",
     name: "Floral & Bright", roast: "Light",
     notes: ["Jasmine", "Bergamot", "Blueberry"],
-    price: 14.50, accentColor: "#7b4fa6",
+    price: 14.50,
     bg: "linear-gradient(150deg, #3b1f5e 0%, #1a0a2e 100%)",
   },
   {
@@ -14,7 +14,7 @@ const FEATURED = [
     origin: "Kenya", region: "AA",
     name: "Bold & Fruity", roast: "Light-Med",
     notes: ["Black Currant", "Berry", "Grapefruit"],
-    price: 15.00, accentColor: "#c0392b",
+    price: 15.00,
     bg: "linear-gradient(150deg, #6b1414 0%, #1a0303 100%)",
   },
   {
@@ -22,7 +22,7 @@ const FEATURED = [
     origin: "La Republica", region: "House Blend",
     name: "Our Signature", roast: "Med-Dark",
     notes: ["Cocoa", "Toffee", "Warm Spice"],
-    price: 11.50, accentColor: "#2c7a4b",
+    price: 11.50,
     bg: "linear-gradient(150deg, #1a2d10 0%, #060d03 100%)",
   },
 ] as const;

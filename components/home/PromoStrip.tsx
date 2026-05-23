@@ -2,7 +2,8 @@ import Link from "next/link";
 
 export default function PromoStrip() {
   return (
-    <div
+    <aside
+      aria-label="Promotional offer"
       className="w-full py-5 px-10 flex items-center justify-center gap-6"
       style={{ background: "var(--red)" }}
     >
@@ -17,6 +18,6 @@ export default function PromoStrip() {
       >
         Shop Now
       </Link>
-    </div>
+    </aside>
   );
 }
