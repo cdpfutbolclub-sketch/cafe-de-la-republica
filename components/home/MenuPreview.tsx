@@ -46,7 +46,7 @@ export default function MenuPreview() {
               color: "var(--brown)",
             }}
           >
-            Full Menu →
+            Full Menu <span aria-hidden="true">→</span>
           </Link>
         </div>
       </div>

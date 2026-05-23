@@ -3,8 +3,9 @@ import Link from "next/link";
 export default function StorySection() {
   return (
     <section id="story" className="flex" style={{ minHeight: "480px" }}>
-      {/* Left — gradient placeholder */}
+      {/* Left — gradient placeholder (decorative) */}
       <div
+        aria-hidden="true"
         className="w-1/2"
         style={{ background: "linear-gradient(150deg, #2c1a0e 0%, #1a0a04 100%)" }}
       >
@@ -38,7 +39,7 @@ export default function StorySection() {
               color: "var(--brown)",
             }}
           >
-            Read Our Story →
+            Read Our Story <span aria-hidden="true">→</span>
           </Link>
         </div>
       </div>
