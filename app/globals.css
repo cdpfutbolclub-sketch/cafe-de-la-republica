@@ -28,6 +28,7 @@
   --brown:       #2c1a0e;
   --brown-light: #8b6650;
   --tan:         #c8a98a;
+  --offwhite:    #faf7f2;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
