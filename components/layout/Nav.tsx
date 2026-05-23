@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import LangToggle from "@/components/shared/LangToggle";
+import { useCartStore } from "@/store/cart";
 
 const links = [
   { href: "/shop",      label: "Shop"      },
@@ -10,6 +11,9 @@ const links = [
 ];
 
 export default function Nav() {
+  const itemCount = useCartStore(s => s.itemCount);
+  const openCart  = useCartStore(s => s.openCart);
+
   return (
     <>
       {/* Full-width dark gradient — makes nav readable over both panels */}
@@ -22,7 +26,7 @@ export default function Nav() {
         className="absolute top-0 left-0 right-0 z-50 grid items-center px-10 py-5"
         style={{ gridTemplateColumns: "1fr auto 1fr" }}
       >
-        {/* Logo — bare text, no pill */}
+        {/* Logo */}
         <div className="justify-self-start">
           <Link href="/" className="block">
             <span className="text-white text-[11px] tracking-[0.28em] uppercase font-sans font-semibold leading-tight">
@@ -60,6 +64,7 @@ export default function Nav() {
           <LangToggle />
           <button
             aria-label="cart"
+            onClick={openCart}
             className="text-white text-[10px] tracking-[0.2em] uppercase font-sans px-5 py-2.5 rounded-full transition-colors"
             style={{
               background: "rgba(192,57,43,0.88)",
@@ -68,7 +73,7 @@ export default function Nav() {
               boxShadow: "0 4px 16px rgba(192,57,43,0.3)",
             }}
           >
-            Cart (0)
+            Cart ({itemCount()})
           </button>
         </div>
       </nav>

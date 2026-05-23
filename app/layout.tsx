@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { LangProvider } from "@/hooks/useLang";
+import CartDrawer from "@/components/shop/CartDrawer";
 
 export const metadata: Metadata = {
   title: "Cafe de la Republica — Specialty Coffee · Andorra",
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LangProvider>
           {children}
         </LangProvider>
+        <CartDrawer />
       </body>
     </html>
   );
