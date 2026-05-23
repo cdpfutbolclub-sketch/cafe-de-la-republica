@@ -1,19 +1,19 @@
 "use client";
 import { useState } from "react";
 import { useCartStore } from "@/store/cart";
-import type { Coffee } from "@/lib/coffeeData";
+import type { SanityCoffee } from "@/lib/sanity/queries";
 
-export default function AddToCart({ coffee }: { coffee: Coffee }) {
+export default function AddToCart({ coffee }: { coffee: SanityCoffee }) {
   const [qty, setQty] = useState(1);
   const addItem = useCartStore(s => s.addItem);
   const updateQty = useCartStore(s => s.updateQty);
   const openCart = useCartStore(s => s.openCart);
 
   const handleAdd = () => {
-    const existing = useCartStore.getState().items.find(i => i.id === coffee.id);
+    const existing = useCartStore.getState().items.find(i => i.id === coffee.slug);
     const targetQty = (existing?.qty ?? 0) + qty;
-    addItem({ id: coffee.id, name: coffee.name, origin: coffee.origin, price: coffee.price });
-    if (targetQty > 1) updateQty(coffee.id, targetQty);
+    addItem({ id: coffee.slug, name: coffee.nameEn, origin: coffee.country, price: coffee.price250g });
+    if (targetQty > 1) updateQty(coffee.slug, targetQty);
     openCart();
   };
 
@@ -43,11 +43,11 @@ export default function AddToCart({ coffee }: { coffee: Coffee }) {
       </div>
       <button
         onClick={handleAdd}
-        aria-label={`Add ${qty} ${coffee.name} to cart — €${(coffee.price * qty).toFixed(2)}`}
+        aria-label={`Add ${qty} ${coffee.nameEn} to cart — €${(coffee.price250g * qty).toFixed(2)}`}
         className="flex-1 font-sans text-[10px] tracking-widest uppercase py-3 rounded-full text-white transition-opacity hover:opacity-85"
         style={{ background: "var(--red)" }}
       >
-        Add to Cart — €{(coffee.price * qty).toFixed(2)}
+        Add to Cart — €{(coffee.price250g * qty).toFixed(2)}
       </button>
     </div>
   );

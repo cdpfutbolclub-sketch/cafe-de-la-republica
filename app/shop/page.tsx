@@ -1,9 +1,10 @@
 import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/shop/ProductCard";
-import { COFFEES } from "@/lib/coffeeData";
+import { getAllCoffees } from "@/lib/sanity/queries";
 
-export default function ShopPage() {
+export default async function ShopPage() {
+  const coffees = await getAllCoffees();
   return (
     <>
       <div className="relative">
@@ -19,8 +20,8 @@ export default function ShopPage() {
       </div>
       <main className="px-10 py-16" style={{ background: "var(--cream)" }}>
         <div className="max-w-5xl mx-auto grid grid-cols-4 gap-8">
-          {COFFEES.map(coffee => (
-            <ProductCard key={coffee.id} coffee={coffee} />
+          {coffees.map(coffee => (
+            <ProductCard key={coffee.slug} coffee={coffee} />
           ))}
         </div>
       </main>

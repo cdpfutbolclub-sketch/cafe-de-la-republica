@@ -5,13 +5,33 @@ jest.mock("next/link", () => {
   return MockLink;
 });
 
+jest.mock("next/image", () => {
+  const MockImage = ({ src, alt }: { src: string; alt: string }) =>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} />;
+  MockImage.displayName = "Image";
+  return MockImage;
+});
+
 import { render, screen, fireEvent } from "@testing-library/react";
 import ProductCard from "@/components/shop/ProductCard";
 import AddToCart from "@/components/shop/AddToCart";
 import { useCartStore } from "@/store/cart";
-import { COFFEES } from "@/lib/coffeeData";
+import type { SanityCoffee } from "@/lib/sanity/queries";
 
-const ethiopia = COFFEES[0]; // id: "ethiopia", origin: "Ethiopia", price: 14.50
+const ethiopia: SanityCoffee = {
+  _id: "test-id",
+  slug: "ethiopia",
+  nameCa: "Floral i Brillant",
+  nameEn: "Floral & Bright",
+  country: "Ethiopia",
+  region: "Yirgacheffe",
+  roast: "Light",
+  tastingNotes: ["Jasmine", "Bergamot", "Blueberry"],
+  price250g: 14.50,
+  formats: ["250g"],
+  featured: true,
+};
 
 test("ProductCard renders origin and price", () => {
   render(<ProductCard coffee={ethiopia} />);
@@ -65,7 +85,6 @@ describe("AddToCart", () => {
       isOpen: false,
     });
     render(<AddToCart coffee={ethiopia} />);
-    // qty starts at 1 (useState default), clicking add should result in 2+1=3
     fireEvent.click(screen.getByRole("button", { name: /Add \d+ .+ to cart/i }));
     expect(useCartStore.getState().items[0].qty).toBe(3);
   });
