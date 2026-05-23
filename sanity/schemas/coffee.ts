@@ -19,8 +19,8 @@ export const coffee = defineType({
     defineField({ name: "descriptionCa", title: "Description (Catalan)", type: "text" }),
     defineField({ name: "descriptionEn", title: "Description (English)", type: "text" }),
     defineField({ name: "price250g", title: "Price 250g (€)", type: "number", validation: r => r.required() }),
-    defineField({ name: "price500g", title: "Price 500g (€)", type: "number" }),
-    defineField({ name: "price1kg",  title: "Price 1kg (€)",  type: "number" }),
+    defineField({ name: "price500g", title: "Price 500g (€)", type: "number", validation: r => r.min(0) }),
+    defineField({ name: "price1kg",  title: "Price 1kg (€)",  type: "number", validation: r => r.min(0) }),
     defineField({
       name: "formats", title: "Available Formats", type: "array",
       of: [{ type: "string" }],

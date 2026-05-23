@@ -20,6 +20,6 @@ export const subscriptionPlan = defineType({
   ],
   preview: {
     select: { freq: "frequency", size: "size", price: "price" },
-    prepare: (data: any) => ({ title: `${data.freq} · ${data.size}`, subtitle: `€${data.price}` }),
+    prepare: ({ freq, size, price }) => ({ title: `${freq} · ${size}`, subtitle: `€${price}` }),
   },
 });

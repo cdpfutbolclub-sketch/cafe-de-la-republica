@@ -20,6 +20,6 @@ export const menuItem = defineType({
   orderings: [{ title: "Category", name: "categoryAsc", by: [{ field: "category", direction: "asc" }, { field: "order", direction: "asc" }] }],
   preview: {
     select: { title: "nameEn", subtitle: "category", price: "price" },
-    prepare: (data: any) => ({ title: data.title, subtitle: `${data.subtitle} · €${data.price}` }),
+    prepare: ({ title, subtitle, price }) => ({ title, subtitle: `${subtitle} · €${price}` }),
   },
 });
