@@ -22,9 +22,9 @@ import SubscribePage from "@/app/subscribe/page";
 
 test("Subscribe page renders all three pill groups", () => {
   render(<SubscribePage />);
-  expect(screen.getByRole("group", { name: "Frequency" })).toBeInTheDocument();
-  expect(screen.getByRole("group", { name: "Size" })).toBeInTheDocument();
-  expect(screen.getByRole("group", { name: "Choice" })).toBeInTheDocument();
+  expect(screen.getByRole("radiogroup", { name: "Frequency" })).toBeInTheDocument();
+  expect(screen.getByRole("radiogroup", { name: "Size" })).toBeInTheDocument();
+  expect(screen.getByRole("radiogroup", { name: "Choice" })).toBeInTheDocument();
 });
 
 test("Subscribe page shows default price for Monthly 250g", () => {
@@ -34,13 +34,13 @@ test("Subscribe page shows default price for Monthly 250g", () => {
 
 test("Subscribe page updates price when size changes to 500g", () => {
   render(<SubscribePage />);
-  fireEvent.click(screen.getByRole("button", { name: "500g" }));
+  fireEvent.click(screen.getByRole("radio", { name: "500g" }));
   expect(screen.getByText("€23.99")).toBeInTheDocument();
 });
 
 test("Subscribe page updates price when frequency changes to Weekly", () => {
   render(<SubscribePage />);
-  fireEvent.click(screen.getByRole("button", { name: "Weekly" }));
+  fireEvent.click(screen.getByRole("radio", { name: "Weekly" }));
   expect(screen.getByText("€14.99")).toBeInTheDocument();
 });
 

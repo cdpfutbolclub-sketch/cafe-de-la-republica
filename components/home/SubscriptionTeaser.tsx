@@ -22,12 +22,13 @@ function PillGroup<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div role="group" aria-label={label} className="flex items-center justify-center gap-2 flex-wrap">
+    <div role="radiogroup" aria-label={label} className="flex items-center justify-center gap-2 flex-wrap">
       {options.map(opt => (
         <button
           key={opt}
           onClick={() => onChange(opt)}
-          aria-pressed={value === opt}
+          role="radio"
+          aria-checked={value === opt}
           className="font-sans text-[10px] tracking-widest uppercase px-5 py-2 rounded-full transition-all"
           style={{
             background: value === opt ? "var(--red)"        : "rgba(255,255,255,0.07)",

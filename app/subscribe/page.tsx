@@ -21,12 +21,13 @@ function PillGroup<T extends string>({
   return (
     <div className="mb-6">
       <p aria-hidden="true" className="eyebrow text-[var(--brown-light)] mb-3">{label}</p>
-      <div role="group" aria-label={label} className="flex gap-3 flex-wrap">
+      <div role="radiogroup" aria-label={label} className="flex gap-3 flex-wrap">
         {options.map(opt => (
           <button
             key={opt}
             onClick={() => onChange(opt)}
-            aria-pressed={value === opt}
+            role="radio"
+            aria-checked={value === opt}
             className="font-sans text-[10px] tracking-widest uppercase px-6 py-2.5 rounded-full transition-all"
             style={{
               background: value === opt ? "var(--red)"  : "transparent",
@@ -77,7 +78,11 @@ export default function SubscribePage() {
                 <p className="font-serif text-[var(--brown)] text-lg">
                   {size} · {freq}
                 </p>
-                <p className="font-serif text-[var(--brown)]" style={{ fontSize: "1.8rem" }}>
+                <p
+                  aria-label={`Price: €${price.toFixed(2)} per delivery`}
+                  className="font-serif text-[var(--brown)]"
+                  style={{ fontSize: "1.8rem" }}
+                >
                   €{price.toFixed(2)}
                 </p>
               </div>
