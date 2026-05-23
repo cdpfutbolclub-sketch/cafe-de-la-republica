@@ -8,6 +8,7 @@ jest.mock("next/link", () => {
 import { render, screen } from "@testing-library/react";
 import FeaturedCoffees from "@/components/home/FeaturedCoffees";
 import PromoStrip from "@/components/home/PromoStrip";
+import SubscriptionTeaser from "@/components/home/SubscriptionTeaser";
 
 // ── FeaturedCoffees ───────────────────────────────
 
@@ -34,4 +35,26 @@ test("PromoStrip shows the promo code BENVINGUTS", () => {
 test("PromoStrip shows 20% discount message", () => {
   render(<PromoStrip />);
   expect(screen.getByText(/20%/)).toBeInTheDocument();
+});
+
+// ── SubscriptionTeaser ────────────────────────────
+
+test("SubscriptionTeaser renders frequency options", () => {
+  render(<SubscriptionTeaser />);
+  expect(screen.getByText("Weekly")).toBeInTheDocument();
+  expect(screen.getByText("Bi-weekly")).toBeInTheDocument();
+  expect(screen.getByText(/Monthly/i)).toBeInTheDocument();
+});
+
+test("SubscriptionTeaser renders size options", () => {
+  render(<SubscriptionTeaser />);
+  expect(screen.getByText("250g")).toBeInTheDocument();
+  expect(screen.getByText("500g")).toBeInTheDocument();
+  expect(screen.getByText("1kg")).toBeInTheDocument();
+});
+
+test("SubscriptionTeaser has a CTA link to /subscribe", () => {
+  render(<SubscriptionTeaser />);
+  const link = screen.getByRole("link", { name: /subscribe|start/i });
+  expect(link).toHaveAttribute("href", "/subscribe");
 });
