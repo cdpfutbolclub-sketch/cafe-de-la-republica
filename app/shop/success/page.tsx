@@ -1,8 +1,16 @@
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import Nav from "@/components/layout/Nav";
 import Footer from "@/components/layout/Footer";
 
-export default function CheckoutSuccessPage() {
+export default async function CheckoutSuccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ session_id?: string }>;
+}) {
+  const { session_id } = await searchParams;
+  if (!session_id) redirect("/shop");
+
   return (
     <>
       <div className="relative" style={{ minHeight: "35vh", background: "#1a0a04" }}>
