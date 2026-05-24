@@ -39,7 +39,7 @@ export default function ProductCard({ coffee }: { coffee: SanityCoffee }) {
         </span>
         <Link
           href={`/shop/${coffee.slug}`}
-          aria-label={`View ${coffee.country}`}
+          aria-label={`View ${coffee.nameEn}`}
           className="font-sans text-[10px] tracking-widest uppercase px-4 py-2 rounded-full text-white hover:opacity-80 transition-opacity"
           style={{ background: "var(--red)" }}
         >

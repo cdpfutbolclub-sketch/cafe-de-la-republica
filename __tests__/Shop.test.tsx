@@ -41,7 +41,7 @@ test("ProductCard renders origin and price", () => {
 
 test("ProductCard has a View link to the product page", () => {
   render(<ProductCard coffee={ethiopia} />);
-  const link = screen.getByRole("link", { name: /view ethiopia/i });
+  const link = screen.getByRole("link", { name: /view floral & bright/i });
   expect(link).toHaveAttribute("href", "/shop/ethiopia");
 });
 

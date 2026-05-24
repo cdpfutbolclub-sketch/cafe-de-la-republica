@@ -11,9 +11,12 @@ export default function AddToCart({ coffee }: { coffee: SanityCoffee }) {
 
   const handleAdd = () => {
     const existing = useCartStore.getState().items.find(i => i.id === coffee.slug);
-    const targetQty = (existing?.qty ?? 0) + qty;
-    addItem({ id: coffee.slug, name: coffee.nameEn, origin: coffee.country, price: coffee.price250g });
-    if (targetQty > 1) updateQty(coffee.slug, targetQty);
+    if (existing) {
+      updateQty(coffee.slug, existing.qty + qty);
+    } else {
+      addItem({ id: coffee.slug, name: coffee.nameEn, origin: coffee.country, price: coffee.price250g });
+      if (qty > 1) updateQty(coffee.slug, qty);
+    }
     openCart();
   };
 
