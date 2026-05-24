@@ -1,41 +1,62 @@
 jest.mock("next/link", () => {
-  const MockLink = ({ children, href, ...rest }: { children: React.ReactNode; href: string; [key: string]: unknown }) =>
-    <a href={href} {...rest}>{children}</a>;
+  const MockLink = ({ children, href }: { children: React.ReactNode; href: string }) =>
+    <a href={href}>{children}</a>;
   MockLink.displayName = "Link";
   return MockLink;
 });
 
-jest.mock("@/components/layout/Nav", () => {
-  const MockNav = () => <nav data-testid="nav" />;
-  MockNav.displayName = "Nav";
-  return MockNav;
-});
-
-jest.mock("@/components/layout/Footer", () => {
-  const MockFooter = () => <footer data-testid="footer" />;
-  MockFooter.displayName = "Footer";
-  return MockFooter;
-});
-
+import React from "react";
 import { render, screen } from "@testing-library/react";
-import MenuPage from "@/app/menu/page";
+import { LangProvider } from "@/hooks/useLang";
+import MenuList from "@/components/menu/MenuList";
+import type { SanityMenuItem } from "@/lib/sanity/queries";
 
-test("Menu page renders all four category headings", () => {
-  render(<MenuPage />);
+const mockItems: SanityMenuItem[] = [
+  { _id: "1", nameCa: "Espresso",  nameEn: "Espresso",
+    descriptionCa: "Doble ristretto, intens",  descriptionEn: "Double shot, intense",
+    price: 2.50, category: "espresso", order: 1 },
+  { _id: "2", nameCa: "Americà",   nameEn: "Americano",
+    descriptionCa: "Espresso amb aigua calenta", descriptionEn: "Espresso with hot water",
+    price: 2.80, category: "espresso", order: 2 },
+  { _id: "3", nameCa: "V60",       nameEn: "V60 Pour-over",
+    descriptionCa: "Origen únic, selecció de temporada", descriptionEn: "Single origin, rotating",
+    price: 3.80, category: "filter", order: 1 },
+  { _id: "4", nameCa: "Croissant", nameEn: "Croissant",
+    descriptionCa: "Croissant de mantega", descriptionEn: "Butter croissant",
+    price: 2.80, category: "food", order: 1 },
+];
+
+function renderWithLang(ui: React.ReactElement) {
+  return render(<LangProvider>{ui}</LangProvider>);
+}
+
+test("MenuList renders category headings", () => {
+  renderWithLang(<MenuList items={mockItems} />);
   expect(screen.getByRole("heading", { name: "Espresso" })).toBeInTheDocument();
   expect(screen.getByRole("heading", { name: "Filter Coffee" })).toBeInTheDocument();
-  expect(screen.getByRole("heading", { name: "Cold Drinks" })).toBeInTheDocument();
   expect(screen.getByRole("heading", { name: "Food & Pastries" })).toBeInTheDocument();
 });
 
-test("Menu page renders espresso items with prices", () => {
-  render(<MenuPage />);
-  expect(screen.getByText("Cappuccino")).toBeInTheDocument();
-  expect(screen.getAllByText("€3.20").length).toBeGreaterThanOrEqual(1);
+test("MenuList renders items in Catalan by default", () => {
+  renderWithLang(<MenuList items={mockItems} />);
+  expect(screen.getByText("Americà")).toBeInTheDocument();
+  expect(screen.queryByText("Americano")).not.toBeInTheDocument();
 });
 
-test("Menu page renders food items with prices", () => {
-  render(<MenuPage />);
-  expect(screen.getByText("Avocado Toast")).toBeInTheDocument();
-  expect(screen.getByText("€7.50")).toBeInTheDocument();
+test("MenuList renders item descriptions in Catalan by default", () => {
+  renderWithLang(<MenuList items={mockItems} />);
+  expect(screen.getByText("Doble ristretto, intens")).toBeInTheDocument();
+});
+
+test("MenuList renders item prices", () => {
+  renderWithLang(<MenuList items={mockItems} />);
+  expect(screen.getByText("€2.50")).toBeInTheDocument();
+  expect(screen.getByText("€3.80")).toBeInTheDocument();
+});
+
+test("MenuList groups items by category — espresso category has 2 items", () => {
+  renderWithLang(<MenuList items={mockItems} />);
+  const espressoSection = screen.getByRole("region", { name: "Espresso" });
+  const listItems = espressoSection.querySelectorAll("li");
+  expect(listItems.length).toBe(2);
 });
