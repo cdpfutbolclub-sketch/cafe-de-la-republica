@@ -1,5 +1,6 @@
 import React from "react";
 import { getSiteSettings } from "@/lib/sanity/queries";
+import type { SanitySiteSettings } from "@/lib/sanity/queries";
 
 const FALLBACK = {
   address: "Carrer de la Unió, 7\nAD500 Andorra la Vella\nAndorra",
@@ -12,7 +13,8 @@ const FALLBACK = {
 };
 
 export default async function LocationSection() {
-  const settings = await getSiteSettings().catch(() => ({} as import("@/lib/sanity/queries").SanitySiteSettings));
+  const raw = await getSiteSettings().catch(() => null);
+  const settings: SanitySiteSettings = raw ?? {};
   const {
     address,
     hoursMF,
@@ -36,13 +38,13 @@ export default async function LocationSection() {
           <div>
             <h3 className="eyebrow text-[var(--brown-light)] mb-4">Location</h3>
             <p className="text-white font-serif text-base mb-1">Cafe de la Republica</p>
-            <address className="text-[var(--brown-light)] text-[13px] leading-relaxed not-italic">
+            <p className="text-[var(--brown-light)] text-[13px] leading-relaxed">
               {address.split("\n").reduce<React.ReactNode[]>((acc, line, i, arr) => {
                 acc.push(line);
                 if (i < arr.length - 1) acc.push(<br key={i} />);
                 return acc;
               }, [])}
-            </address>
+            </p>
           </div>
 
           {/* Hours */}
