@@ -1,4 +1,28 @@
-export default function LocationSection() {
+import React from "react";
+import { getSiteSettings } from "@/lib/sanity/queries";
+
+const FALLBACK = {
+  address: "Carrer de la Unió, 7\nAD500 Andorra la Vella\nAndorra",
+  hoursMF:  "7:00 – 19:00",
+  hoursSat: "8:00 – 20:00",
+  hoursSun: "9:00 – 17:00",
+  phone:    "+376 000 000",
+  email:    "hello@caferepublica.ad",
+  instagramUrl: "https://instagram.com/caferepublica",
+};
+
+export default async function LocationSection() {
+  const settings = await getSiteSettings().catch(() => ({} as import("@/lib/sanity/queries").SanitySiteSettings));
+  const {
+    address,
+    hoursMF,
+    hoursSat,
+    hoursSun,
+    phone,
+    email,
+    instagramUrl,
+  } = { ...FALLBACK, ...settings };
+
   return (
     <section id="location" className="px-10 py-16" style={{ background: "#1a0a04" }}>
       <div className="max-w-4xl mx-auto">
@@ -12,11 +36,13 @@ export default function LocationSection() {
           <div>
             <h3 className="eyebrow text-[var(--brown-light)] mb-4">Location</h3>
             <p className="text-white font-serif text-base mb-1">Cafe de la Republica</p>
-            <p className="text-[var(--brown-light)] text-[13px] leading-relaxed">
-              Carrer de la Unió, 7<br />
-              AD500 Andorra la Vella<br />
-              Andorra
-            </p>
+            <address className="text-[var(--brown-light)] text-[13px] leading-relaxed not-italic">
+              {address.split("\n").reduce<React.ReactNode[]>((acc, line, i, arr) => {
+                acc.push(line);
+                if (i < arr.length - 1) acc.push(<br key={i} />);
+                return acc;
+              }, [])}
+            </address>
           </div>
 
           {/* Hours */}
@@ -24,9 +50,9 @@ export default function LocationSection() {
             <h3 className="eyebrow text-[var(--brown-light)] mb-4">Hours</h3>
             <dl className="space-y-1">
               {[
-                { day: "Mon – Fri", hours: "7:00 – 19:00" },
-                { day: "Saturday",  hours: "8:00 – 20:00" },
-                { day: "Sunday",    hours: "9:00 – 17:00" },
+                { day: "Mon – Fri", hours: hoursMF  },
+                { day: "Saturday",  hours: hoursSat },
+                { day: "Sunday",    hours: hoursSun },
               ].map(({ day, hours }) => (
                 <div key={day} className="flex justify-between text-[13px]">
                   <dt className="text-[var(--brown-light)]">{day}</dt>
@@ -42,30 +68,32 @@ export default function LocationSection() {
             <ul className="space-y-2 text-[13px]">
               <li>
                 <a
-                  href="tel:+376000000"
+                  href={`tel:${phone.replace(/\s/g, "")}`}
                   className="text-[var(--brown-light)] hover:text-white transition-colors"
                 >
-                  +376 000 000
+                  {phone}
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:hello@caferepublica.ad"
+                  href={`mailto:${email}`}
                   className="text-[var(--brown-light)] hover:text-white transition-colors"
                 >
-                  hello@caferepublica.ad
+                  {email}
                 </a>
               </li>
-              <li>
-                <a
-                  href="https://instagram.com/caferepublica"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[var(--brown-light)] hover:text-white transition-colors"
-                >
-                  Instagram
-                </a>
-              </li>
+              {instagramUrl && (
+                <li>
+                  <a
+                    href={instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--brown-light)] hover:text-white transition-colors"
+                  >
+                    Instagram
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
