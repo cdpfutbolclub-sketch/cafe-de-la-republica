@@ -4,7 +4,7 @@ import MenuList from "@/components/menu/MenuList";
 import { getMenuItems } from "@/lib/sanity/queries";
 
 export default async function MenuPage() {
-  const items = await getMenuItems();
+  const items = await getMenuItems().catch(() => [] as import("@/lib/sanity/queries").SanityMenuItem[]);
 
   return (
     <>

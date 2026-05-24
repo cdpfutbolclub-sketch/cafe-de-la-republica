@@ -12,14 +12,16 @@ const CATEGORY_LABELS: Record<string, string> = {
 export default function MenuList({ items }: { items: SanityMenuItem[] }) {
   const { t } = useLang();
 
+  if (items.length === 0) {
+    return <p className="text-[var(--brown-light)]">Menu coming soon.</p>;
+  }
+
   const categories = Array.from(new Set(items.map(i => i.category)));
 
   return (
     <>
       {categories.map(cat => {
-        const catItems = items
-          .filter(i => i.category === cat)
-          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+        const catItems = items.filter(i => i.category === cat);
 
         return (
           <section key={cat} aria-labelledby={`cat-${cat}`}>
@@ -47,10 +49,10 @@ export default function MenuList({ items }: { items: SanityMenuItem[] }) {
                     )}
                   </div>
                   <span
-                    aria-label={`Price: €${item.price.toFixed(2)}`}
+                    aria-label={item.price != null ? `Price: €${item.price.toFixed(2)}` : "Price not set"}
                     className="font-sans text-[var(--brown)] text-sm shrink-0 mt-0.5"
                   >
-                    €{item.price.toFixed(2)}
+                    {item.price != null ? `€${item.price.toFixed(2)}` : "—"}
                   </span>
                 </li>
               ))}
