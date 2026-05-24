@@ -30,7 +30,7 @@ import type { SanityCoffee } from "@/lib/sanity/queries";
 
 const mockFeaturedCoffees: SanityCoffee[] = [
   { _id: "1", slug: "ethiopia", nameCa: "Floral i Brillant", nameEn: "Floral & Bright",
-    country: "Ethiopia", region: "Yirgacheffe", roast: "Light", tastingNotes: [],
+    country: "Ethiopia", region: "Yirgacheffe", roast: "Light", tastingNotes: ["Jasmine", "Bergamot", "Blueberry"],
     price250g: 14.50, formats: ["250g"], featured: true },
   { _id: "2", slug: "kenya", nameCa: "Atrevit i Fruitat", nameEn: "Bold & Fruity",
     country: "Kenya", region: "AA", roast: "Light-Med", tastingNotes: [],

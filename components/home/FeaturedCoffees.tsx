@@ -4,6 +4,7 @@ import { getFeaturedCoffees } from "@/lib/sanity/queries";
 
 export default async function FeaturedCoffees() {
   const coffees = await getFeaturedCoffees();
+  if (!coffees?.length) return null;
 
   return (
     <section style={{ background: "var(--cream)" }} className="px-10 py-20">
