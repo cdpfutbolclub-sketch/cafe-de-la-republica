@@ -8,13 +8,14 @@ import MenuPreview         from "@/components/home/MenuPreview";
 import LocationSection     from "@/components/home/LocationSection";
 import Footer              from "@/components/layout/Footer";
 import { getAllCoffees }   from "@/lib/sanity/queries";
+import { sanityImg }       from "@/lib/sanity/imageUrl";
 
 export default async function HomePage() {
   const coffees = await getAllCoffees().catch(() => []);
   const heroImages = Object.fromEntries(
     coffees
       .filter(c => c.image?.asset.url)
-      .map(c => [c.slug, c.image!.asset.url])
+      .map(c => [c.slug, sanityImg(c.image!.asset.url, 1200)])
   );
 
   return (

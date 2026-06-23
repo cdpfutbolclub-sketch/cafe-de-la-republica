@@ -27,20 +27,20 @@ export default function MenuList({ items }: { items: SanityMenuItem[] }) {
           <section key={cat} aria-labelledby={`cat-${cat}`}>
             <h2
               id={`cat-${cat}`}
-              className="font-serif text-[var(--brown)] mb-6 pb-3"
-              style={{ fontSize: "1.6rem", borderBottom: "1px solid rgba(200,169,138,0.3)" }}
+              className="font-serif text-[var(--brown)]"
+              style={{ fontSize: "1.6rem", borderBottom: "1px solid rgba(200,169,138,0.3)", marginBottom: "24px", paddingBottom: "12px" }}
             >
               {CATEGORY_LABELS[cat] ?? cat}
             </h2>
-            <ul className="grid grid-cols-2 gap-x-12 gap-y-5">
+            <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", columnGap: "48px", rowGap: "20px", listStyle: "none", padding: 0, margin: 0 }}>
               {catItems.map(item => (
-                <li key={item._id} className="flex items-start justify-between gap-4">
+                <li key={item._id} style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px" }}>
                   <div>
                     <p className="font-serif text-[var(--brown)] text-base">
                       {t({ ca: item.nameCa, en: item.nameEn })}
                     </p>
                     {(item.descriptionCa ?? item.descriptionEn) && (
-                      <p className="text-[var(--brown-light)] text-[13px] leading-relaxed mt-0.5">
+                      <p className="text-[var(--brown-light)] text-[13px] leading-relaxed" style={{ marginTop: "2px" }}>
                         {t({
                           ca: item.descriptionCa ?? item.descriptionEn ?? "",
                           en: item.descriptionEn ?? item.descriptionCa ?? "",
@@ -50,7 +50,8 @@ export default function MenuList({ items }: { items: SanityMenuItem[] }) {
                   </div>
                   <span
                     aria-label={item.price != null ? `Price: €${item.price.toFixed(2)}` : "Price not set"}
-                    className="font-sans text-[var(--brown)] text-sm shrink-0 mt-0.5"
+                    className="font-sans text-[var(--brown)] text-sm"
+                    style={{ flexShrink: 0, marginTop: "2px" }}
                   >
                     {item.price != null ? `€${item.price.toFixed(2)}` : "—"}
                   </span>

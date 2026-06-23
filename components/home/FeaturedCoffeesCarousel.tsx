@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
 import { useCartStore } from "@/store/cart";
 import FlipButton from "@/components/shared/FlipButton";
+import { sanityImg } from "@/lib/sanity/imageUrl";
 import CoffeeBeansBg from "@/components/shared/CoffeeBeansBg";
 
 interface Coffee {
@@ -131,7 +132,7 @@ export default function FeaturedCoffeesCarousel({ coffees }: { coffees: Coffee[]
                     >
                       {(coffee.productImage?.asset.url ?? coffee.image?.asset.url) ? (
                         <Image
-                          src={(coffee.productImage?.asset.url ?? coffee.image?.asset.url)!}
+                          src={sanityImg((coffee.productImage?.asset.url ?? coffee.image?.asset.url)!, 600)}
                           alt={coffee.nameEn}
                           fill
                           sizes="300px"

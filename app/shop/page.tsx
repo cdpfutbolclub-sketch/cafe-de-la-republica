@@ -9,17 +9,17 @@ export default async function ShopPage() {
     <>
       <div className="relative">
         <Nav />
-        <div className="pt-28 pb-8 px-10" style={{ background: "var(--cream)" }}>
-          <div className="max-w-5xl mx-auto">
-            <p className="eyebrow text-[var(--brown-light)] mb-3">All Coffees</p>
+        <div style={{ paddingTop: "112px", paddingBottom: "32px", paddingLeft: "40px", paddingRight: "40px", background: "var(--cream)" }}>
+          <div style={{ maxWidth: "1024px", margin: "0 auto" }}>
+            <p className="eyebrow text-[var(--brown-light)]" style={{ marginBottom: "12px" }}>All Coffees</p>
             <h1 className="font-serif text-[var(--brown)]" style={{ fontSize: "2.5rem" }}>
               The Shop
             </h1>
           </div>
         </div>
       </div>
-      <main className="px-10 py-16" style={{ background: "var(--cream)" }}>
-        <div className="max-w-5xl mx-auto grid grid-cols-4 gap-8">
+      <main style={{ paddingLeft: "40px", paddingRight: "40px", paddingTop: "64px", paddingBottom: "64px", background: "var(--cream)" }}>
+        <div style={{ maxWidth: "1024px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "32px" }}>
           {coffees.map(coffee => (
             <ProductCard key={coffee.slug} coffee={coffee} />
           ))}
