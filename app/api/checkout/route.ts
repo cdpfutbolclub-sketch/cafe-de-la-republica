@@ -7,13 +7,15 @@ export interface CheckoutItem {
   qty: number;
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  apiVersion: "2025-02-24.acacia" as any,
-});
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    apiVersion: "2025-02-24.acacia" as any,
+  });
+}
 
 export async function createCheckoutSession(items: CheckoutItem[], baseUrl: string) {
-  return stripe.checkout.sessions.create({
+  return getStripe().checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],
     line_items: items.map(item => ({
