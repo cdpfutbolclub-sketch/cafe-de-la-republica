@@ -17,6 +17,7 @@ export type SanityCoffee = {
   price1kg?: number;
   formats: string[];
   image?: { asset: { url: string } };
+  productImage?: { asset: { url: string } };
   heroBackground?: { asset: { url: string } };
   accentColor?: string;
   featured: boolean;
@@ -59,6 +60,7 @@ export async function getAllCoffees(): Promise<SanityCoffee[]> {
       tastingNotes, descriptionCa, descriptionEn,
       price250g, price500g, price1kg, formats,
       "image": image { asset-> { url } },
+      "productImage": productImage { asset-> { url } },
       "heroBackground": heroBackground { asset-> { url } },
       accentColor, featured
     }`
@@ -72,6 +74,7 @@ export async function getFeaturedCoffees(): Promise<SanityCoffee[]> {
       nameCa, nameEn, country, region, roast,
       tastingNotes, price250g,
       "image": image { asset-> { url } },
+      "productImage": productImage { asset-> { url } },
       accentColor, featured
     }`
   );
@@ -85,6 +88,7 @@ export async function getCoffeeBySlug(slug: string): Promise<SanityCoffee | null
       tastingNotes, descriptionCa, descriptionEn,
       price250g, price500g, price1kg, formats,
       "image": image { asset-> { url } },
+      "productImage": productImage { asset-> { url } },
       "heroBackground": heroBackground { asset-> { url } },
       accentColor, featured
     }`,

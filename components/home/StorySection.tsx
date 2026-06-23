@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CoffeeBeansBg from "@/components/shared/CoffeeBeansBg";
 
 export default function StorySection() {
   return (
@@ -14,27 +15,29 @@ export default function StorySection() {
 
       {/* Right — text */}
       <div
-        className="w-1/2 flex items-center px-16 py-16"
-        style={{ background: "var(--cream-warm)" }}
+        className="w-1/2 flex items-center relative"
+        style={{ background: "var(--cream-warm)", paddingTop: "64px", paddingBottom: "64px", paddingLeft: "80px", paddingRight: "64px" }}
       >
+        <CoffeeBeansBg />
         <div className="max-w-sm">
-          <p className="eyebrow text-[var(--red)] mb-4">Our Story</p>
-          <h2 className="font-serif text-[var(--brown)] mb-5" style={{ fontSize: "2rem" }}>
+          <p className="eyebrow text-[var(--red)]" style={{ marginBottom: "16px" }}>Our Story</p>
+          <h2 className="font-serif text-[var(--brown)]" style={{ fontSize: "2rem", marginBottom: "20px" }}>
             Coffee at the Crossroads of Europe
           </h2>
-          <p className="text-[var(--brown-light)] text-[14px] leading-relaxed mb-5">
+          <p className="text-[var(--brown-light)] text-[14px] leading-relaxed" style={{ marginBottom: "16px" }}>
             Nestled in the heart of the Pyrenees, Cafe de la Republica was born from a simple belief:
             exceptional coffee deserves exceptional care. We source directly from farmers who share
             our obsession with quality, and roast each batch in small quantities to bring out the
             full character of every origin.
           </p>
-          <p className="text-[var(--brown-light)] text-[14px] leading-relaxed mb-8">
+          <p className="text-[var(--brown-light)] text-[14px] leading-relaxed" style={{ marginBottom: "40px" }}>
             Come find us in Andorra la Vella, where the mountains meet great coffee.
           </p>
           <Link
             href="/#story"
-            className="inline-flex items-center gap-2 font-sans text-[10px] tracking-widest uppercase px-6 py-3 rounded-full transition-colors"
+            className="inline-flex items-center gap-2 font-sans text-[10px] tracking-widest uppercase rounded-full transition-colors"
             style={{
+              paddingTop: "12px", paddingBottom: "12px", paddingLeft: "24px", paddingRight: "24px",
               border: "1px solid var(--brown)",
               color: "var(--brown)",
             }}

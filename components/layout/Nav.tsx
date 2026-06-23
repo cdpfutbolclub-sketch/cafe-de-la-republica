@@ -2,12 +2,13 @@
 import Link from "next/link";
 import LangToggle from "@/components/shared/LangToggle";
 import { useCartStore } from "@/store/cart";
+import { IoBagOutline, IoRestaurantOutline, IoMailOutline, IoInformationCircleOutline } from "react-icons/io5";
 
 const links = [
-  { href: "/shop",      label: "Shop"      },
-  { href: "/menu",      label: "Menu"      },
-  { href: "/subscribe", label: "Subscribe" },
-  { href: "/#story",    label: "About"     },
+  { href: "/shop",      label: "Shop",      icon: <IoBagOutline />,                gradientFrom: "#c0392b", gradientTo: "#ff6b4a" },
+  { href: "/menu",      label: "Menu",      icon: <IoRestaurantOutline />,          gradientFrom: "#b8860b", gradientTo: "#f5c842" },
+  { href: "/subscribe", label: "Subscribe", icon: <IoMailOutline />,                gradientFrom: "#2e8b57", gradientTo: "#7ee8a2" },
+  { href: "/#story",    label: "About",     icon: <IoInformationCircleOutline />,   gradientFrom: "#3b1f5e", gradientTo: "#a855f7" },
 ];
 
 export default function Nav() {
@@ -16,15 +17,24 @@ export default function Nav() {
 
   return (
     <>
-      {/* Full-width dark gradient — makes nav readable over both panels */}
       <div
-        className="absolute top-0 left-0 right-0 h-28 z-[45] pointer-events-none"
-        style={{ background: "linear-gradient(to bottom, rgba(8,3,1,0.80) 0%, rgba(8,3,1,0.42) 52%, transparent 100%)" }}
+        className="absolute top-0 left-0 right-0 z-[45] pointer-events-none"
+        style={{
+          height: "160px",
+          background: "linear-gradient(to bottom, rgba(8,3,1,0.80) 0%, rgba(8,3,1,0.42) 52%, transparent 100%)",
+        }}
       />
 
       <nav
-        className="absolute top-0 left-0 right-0 z-50 grid items-center px-10 py-5"
-        style={{ gridTemplateColumns: "1fr auto 1fr" }}
+        className="absolute top-0 left-0 right-0 z-50 grid"
+        style={{
+          gridTemplateColumns: "1fr auto 1fr",
+          alignItems: "center",
+          paddingTop: "24px",
+          paddingBottom: "16px",
+          paddingLeft: "36px",
+          paddingRight: "36px",
+        }}
       >
         {/* Logo */}
         <div className="justify-self-start">
@@ -38,26 +48,34 @@ export default function Nav() {
           </Link>
         </div>
 
-        {/* Links — glass pill, dead center */}
-        <div
-          className="justify-self-center flex rounded-full px-2 py-1.5"
-          style={{
-            background: "rgba(8,3,1,0.35)",
-            backdropFilter: "blur(16px) saturate(160%)",
-            border: "1px solid rgba(255,255,255,0.15)",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
-          }}
-        >
-          {links.map(l => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="text-white/85 hover:text-white text-[10px] tracking-[0.2em] uppercase font-sans px-4 py-1.5 rounded-full hover:bg-white/10 transition-all"
+        {/* Gradient expand menu */}
+        <ul className="justify-self-center flex gap-4">
+          {links.map(({ href, label, icon, gradientFrom, gradientTo }) => (
+            <li
+              key={href}
+              style={{ "--gradient-from": gradientFrom, "--gradient-to": gradientTo } as React.CSSProperties}
+              className="relative w-[48px] h-[48px] bg-white/10 backdrop-blur-md shadow-lg rounded-full flex items-center justify-center transition-all duration-500 hover:w-[140px] hover:shadow-none group cursor-pointer border border-white/15"
             >
-              {l.label}
-            </Link>
+              {/* Gradient fill on hover */}
+              <span className="absolute inset-0 rounded-full bg-[linear-gradient(45deg,var(--gradient-from),var(--gradient-to))] opacity-0 transition-all duration-500 group-hover:opacity-100" />
+              {/* Glow */}
+              <span className="absolute top-[8px] inset-x-0 h-full rounded-full bg-[linear-gradient(45deg,var(--gradient-from),var(--gradient-to))] blur-[14px] opacity-0 -z-10 transition-all duration-500 group-hover:opacity-40" />
+
+              {/* Icon — hides on hover */}
+              <span className="relative z-10 transition-all duration-300 group-hover:scale-0 group-hover:opacity-0">
+                <span className="text-xl text-white/70">{icon}</span>
+              </span>
+
+              {/* Label — appears on hover */}
+              <Link
+                href={href}
+                className="absolute inset-0 flex items-center justify-center z-10 text-white uppercase tracking-widest text-[11px] font-sans scale-0 opacity-0 transition-all duration-300 group-hover:scale-100 group-hover:opacity-100 delay-100"
+              >
+                {label}
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
 
         {/* Right — lang toggle + cart */}
         <div className="justify-self-end flex items-center gap-3">
@@ -65,8 +83,8 @@ export default function Nav() {
           <button
             aria-label={`Cart, ${itemCount} item${itemCount === 1 ? "" : "s"}`}
             onClick={openCart}
-            className="text-white text-[10px] tracking-[0.2em] uppercase font-sans px-5 py-2.5 rounded-full transition-colors"
-            style={{
+            className="text-white text-[10px] tracking-[0.2em] uppercase font-sans rounded-full transition-colors"
+            style={{ paddingTop: "10px", paddingBottom: "10px", paddingLeft: "24px", paddingRight: "24px",
               background: "rgba(192,57,43,0.88)",
               backdropFilter: "blur(12px)",
               border: "1px solid rgba(255,100,80,0.3)",

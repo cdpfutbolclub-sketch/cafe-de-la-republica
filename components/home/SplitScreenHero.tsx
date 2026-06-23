@@ -1,7 +1,53 @@
 "use client";
 import { useRef, useState, useEffect, useCallback } from "react";
+import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
 import gsap from "gsap";
 import Link from "next/link";
+import Image from "next/image";
+import CoffeeBeansBg from "@/components/shared/CoffeeBeansBg";
+
+function DockDot({
+  mouseY, active, dotColor, onClick, onHover, ariaLabel,
+}: {
+  mouseY: MotionValue<number>;
+  active: boolean;
+  dotColor: string;
+  onClick: () => void;
+  onHover: () => void;
+  ariaLabel: string;
+}) {
+  const ref = useRef<HTMLButtonElement>(null);
+
+  const distance = useTransform(mouseY, (val) => {
+    const bounds = ref.current?.getBoundingClientRect() ?? { y: 0, height: 0 };
+    return val - bounds.y - bounds.height / 2;
+  });
+
+  const sizeSync = useTransform(distance, [-100, 0, 100], [active ? 38 : 24, active ? 60 : 48, active ? 38 : 24]);
+  const size = useSpring(sizeSync, { mass: 0.1, stiffness: 150, damping: 12 });
+
+  return (
+    <motion.button
+      ref={ref}
+      onClick={onClick}
+      onMouseEnter={onHover}
+      aria-label={ariaLabel}
+      style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        background: dotColor,
+        border: `2.5px solid rgba(255,255,255,${active ? 0.7 : 0.3})`,
+        boxShadow: active
+          ? `0 0 0 5px ${dotColor}44, inset 0 0 0 5px rgba(0,0,0,0.28)`
+          : `inset 0 0 0 4px rgba(0,0,0,0.22)`,
+        opacity: active ? 1 : 0.55,
+        flexShrink: 0,
+        cursor: "pointer",
+      }}
+    />
+  );
+}
 
 const SLIDES = [
   {
@@ -72,9 +118,12 @@ const SLIDES = [
 
 type Slide = typeof SLIDES[number];
 
-export default function SplitScreenHero() {
+export default function SplitScreenHero({ images = {} }: { images?: Record<string, string> }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [hovered,     setHovered]     = useState(false);
+  const mouseY           = useMotionValue(Infinity);
+  const inBottomZoneRef  = useRef(false);
+  const sectionRef      = useRef<HTMLElement>(null);
   const leftBgRef       = useRef<HTMLDivElement>(null);
   const rightContentRef = useRef<HTMLDivElement>(null);
   const isAnimatingRef  = useRef(false);
@@ -89,15 +138,22 @@ export default function SplitScreenHero() {
     const content = rightContentRef.current;
     if (!bg || !content) { isAnimatingRef.current = false; return; }
 
-    const exitY  = direction === "forward" ? "-100%" : "100%";
-    const enterY = direction === "forward" ?  "100%" : "-100%";
+    const exitY     = direction === "forward" ? "-100%" : "100%";
+    const enterY    = direction === "forward" ?  "100%" : "-100%";
+    const textExit  = direction === "forward" ? -60 : 60;
+    const textEnter = direction === "forward" ?  60 : -60;
 
     const tl = gsap.timeline({ onComplete: () => { isAnimatingRef.current = false; } });
-    tl.to(content, { opacity: 0, duration: 0.25, ease: "power1.out" }, 0);
-    tl.to(bg,      { y: exitY,  duration: 0.60, ease: "power2.inOut" }, 0);
-    tl.call(() => { setActiveIndex(newIndex); gsap.set(bg, { y: enterY }); });
-    tl.to(bg,      { y: "0%",  duration: 0.60, ease: "power2.inOut" });
-    tl.to(content, { opacity: 1, duration: 0.25, ease: "power1.in" }, "-=0.2");
+    tl.to(content, { y: textExit, duration: 0.35, ease: "power2.in"    }, 0);
+    tl.to(content, { opacity: 0,  duration: 0.15, ease: "none"         }, 0.20);
+    tl.to(bg,      { y: exitY,    duration: 0.60, ease: "power2.inOut" }, 0);
+    tl.call(() => {
+      setActiveIndex(newIndex);
+      gsap.set(bg,      { y: enterY });
+      gsap.set(content, { y: textEnter, opacity: 0 });
+    });
+    tl.to(bg,      { y: "0%", duration: 0.60, ease: "power2.inOut" });
+    tl.to(content, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, "-=0.35");
   }, [activeIndex]);
 
   const next = useCallback(() => goTo((activeIndex + 1) % SLIDES.length, "forward"),  [goTo, activeIndex]);
@@ -105,15 +161,18 @@ export default function SplitScreenHero() {
 
   // Scroll wheel — 900ms debounce
   useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
     const handleWheel = (e: WheelEvent) => {
+      if (inBottomZoneRef.current) return;
       e.preventDefault();
       if (debounceTimer) return;
       debounceTimer = setTimeout(() => { debounceTimer = null; }, 900);
       if (e.deltaY > 0) next(); else prev();
     };
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    return () => window.removeEventListener("wheel", handleWheel);
+    section.addEventListener("wheel", handleWheel, { passive: false });
+    return () => section.removeEventListener("wheel", handleWheel);
   }, [next, prev]);
 
   // Keyboard arrows
@@ -162,25 +221,30 @@ export default function SplitScreenHero() {
 
   return (
     <section
+      ref={sectionRef}
       className="relative w-full h-screen overflow-hidden flex"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Left panel — animates up/down */}
-      <div className="relative w-1/2 h-full overflow-hidden">
+      {/* Left panel — two divs slide simultaneously, no gap */}
+      <div className="relative w-1/2 h-full overflow-hidden" style={{ background: "#1a0a04" }}>
         <div
           ref={leftBgRef}
           className="absolute inset-0"
-          style={{ background: slide.bg }}
+          style={{ background: SLIDES[activeIndex].bg }}
         >
+          {images[SLIDES[activeIndex].id] && (
+            <Image src={images[SLIDES[activeIndex].id]} alt={SLIDES[activeIndex].name} fill sizes="50vw" unoptimized className="object-cover" style={{ opacity: 0.75 }} priority={SLIDES[activeIndex].id === "ethiopia"} />
+          )}
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(8,3,1,0.45) 0%, rgba(8,3,1,0.10) 100%)" }} />
           <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(192,57,43,0.18) 0%, transparent 55%)" }} />
         </div>
       </div>
 
       {/* Right panel — static cream */}
-      <div className="relative w-1/2 h-full flex items-center" style={{ background: "#faf6f0" }}>
-        <div ref={rightContentRef} className="px-14 py-10 max-w-sm w-full">
+      <div className="relative w-1/2 h-full flex items-center justify-center" style={{ background: "#faf6f0" }}>
+        <CoffeeBeansBg />
+        <div ref={rightContentRef} className="w-full max-w-[340px] pl-16 pr-10">
 
           <p className="eyebrow text-[var(--brown-light)] mb-5">
             {slide.origin} · {slide.region}
@@ -198,8 +262,8 @@ export default function SplitScreenHero() {
             {slide.notes.map(note => (
               <span
                 key={note}
-                className="text-[10px] font-sans tracking-widest uppercase px-3 py-1 rounded-full text-[var(--brown-light)]"
-                style={{ border: "1px solid var(--tan)" }}
+                className="text-[10px] font-sans tracking-widest uppercase rounded-full text-[var(--brown-light)]"
+                style={{ border: "1px solid var(--tan)", paddingTop: "6px", paddingBottom: "6px", paddingLeft: "14px", paddingRight: "14px" }}
               >
                 {note}
               </span>
@@ -212,84 +276,70 @@ export default function SplitScreenHero() {
 
           <Link
             href={`/shop/${slide.id}`}
-            className="inline-flex items-center gap-2 font-sans text-[10px] tracking-[0.25em] uppercase px-6 py-3 rounded-full text-white transition-all hover:opacity-90"
-            style={{ background: "var(--red)" }}
+            className="inline-flex items-center gap-2 font-sans text-[10px] tracking-[0.25em] uppercase rounded-full text-white transition-all hover:opacity-90"
+            style={{ paddingTop: "12px", paddingBottom: "12px", paddingLeft: "24px", paddingRight: "24px", background: "var(--red)" }}
           >
             Shop Coffee →
           </Link>
         </div>
       </div>
 
-      {/* Center divider + dot nav */}
+      {/* Center divider line */}
       <div
         className="absolute top-0 bottom-0 left-1/2 pointer-events-none"
         style={{ width: "2px", background: "rgba(200,169,138,0.25)", transform: "translateX(-50%)" }}
+      />
+
+      {/* Vertical dock nav */}
+      <div
+        className="absolute flex flex-col items-center gap-[7px] z-30"
+        style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+        onMouseMove={(e) => mouseY.set(e.pageY)}
+        onMouseLeave={() => mouseY.set(Infinity)}
       >
-        <div
-          className="absolute flex flex-col gap-3 pointer-events-auto"
-          style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
-        >
-          {SLIDES.map((s, i) => {
-            const active = i === activeIndex;
-            return (
-              <button
-                key={s.id}
-                onClick={() => goTo(i, i > activeIndex ? "forward" : "backward")}
-                aria-label={`${s.origin} coffee`}
-                style={{
-                  width:        active ? "32px" : "24px",
-                  height:       active ? "32px" : "24px",
-                  borderRadius: "50%",
-                  background:   s.dotColor,
-                  border:       `2.5px solid rgba(255,255,255,${active ? 0.7 : 0.3})`,
-                  boxShadow:    active
-                    ? `0 0 0 5px ${s.dotColor}44, inset 0 0 0 5px rgba(0,0,0,0.28)`
-                    : `inset 0 0 0 4px rgba(0,0,0,0.22)`,
-                  opacity:      active ? 1 : 0.55,
-                  transition:   "all 0.3s ease",
-                  flexShrink:   0,
-                }}
-              />
-            );
-          })}
-        </div>
+        {SLIDES.map((s, i) => (
+          <DockDot
+            key={s.id}
+            mouseY={mouseY}
+            active={i === activeIndex}
+            dotColor={s.dotColor}
+            onClick={() => goTo(i, i > activeIndex ? "forward" : "backward")}
+            onHover={() => goTo(i, i > activeIndex ? "forward" : "backward")}
+            ariaLabel={`${s.origin} coffee`}
+          />
+        ))}
       </div>
 
-      {/* Up arrow — above nav */}
-      <button
-        onClick={prev}
-        aria-label="Previous coffee"
-        className="absolute left-1/2 z-30 text-white/60 hover:text-white transition-colors flex items-center justify-center"
-        style={{
-          top: "80px",
-          transform: "translateX(-50%)",
-          width: "36px", height: "36px",
-          border: "1px solid rgba(255,255,255,0.2)",
-          borderRadius: "50%",
-          background: "rgba(8,3,1,0.3)",
-          backdropFilter: "blur(8px)",
-        }}
-      >
-        ↑
-      </button>
 
-      {/* Down arrow */}
-      <button
-        onClick={next}
-        aria-label="Next coffee"
-        className="absolute left-1/2 z-30 text-white/60 hover:text-white transition-colors flex items-center justify-center"
-        style={{
-          bottom: "20px",
-          transform: "translateX(-50%)",
-          width: "36px", height: "36px",
-          border: "1px solid rgba(255,255,255,0.2)",
-          borderRadius: "50%",
-          background: "rgba(8,3,1,0.3)",
-          backdropFilter: "blur(8px)",
-        }}
+      {/* Bottom gradient + scroll-down zone */}
+      <div
+        className="absolute bottom-0 left-0 right-0 z-40 flex flex-col items-center justify-center pointer-events-auto"
+        style={{ height: "140px", background: "linear-gradient(to top, rgba(8,3,1,0.90) 0%, transparent 100%)" }}
+        onMouseEnter={() => { inBottomZoneRef.current = true; }}
+        onMouseLeave={() => { inBottomZoneRef.current = false; }}
       >
-        ↓
-      </button>
+        <button
+          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
+          aria-label="Scroll down to content"
+          className="flex flex-col items-center gap-2 text-white/50 hover:text-white/80 transition-colors group"
+        >
+          <motion.span
+            animate={{ opacity: [0.45, 0.9, 0.45] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            className="text-[9px] tracking-[0.3em] uppercase font-sans"
+          >
+            Scroll
+          </motion.span>
+          <motion.span
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+            className="flex flex-col items-center leading-none"
+          >
+            <span style={{ fontSize: "10px", opacity: 0.4, lineHeight: 1 }}>▼</span>
+            <span style={{ fontSize: "13px", lineHeight: 1 }}>▼</span>
+          </motion.span>
+        </button>
+      </div>
 
     </section>
   );

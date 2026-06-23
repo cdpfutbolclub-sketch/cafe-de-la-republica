@@ -1,4 +1,5 @@
 import React from "react";
+import CoffeeBeansBg from "@/components/shared/CoffeeBeansBg";
 import { getSiteSettings } from "@/lib/sanity/queries";
 import type { SanitySiteSettings } from "@/lib/sanity/queries";
 
@@ -26,17 +27,18 @@ export default async function LocationSection() {
   } = { ...FALLBACK, ...settings };
 
   return (
-    <section id="location" className="px-10 py-16" style={{ background: "#1a0a04" }}>
-      <div className="max-w-4xl mx-auto">
-        <p className="eyebrow text-[var(--red)] text-center mb-3">Find Us</p>
-        <h2 className="font-serif text-white text-center mb-12" style={{ fontSize: "2rem" }}>
+    <section id="location" className="relative" style={{ background: "#1a0a04", paddingTop: "48px", paddingBottom: "48px", paddingLeft: "40px", paddingRight: "40px" }}>
+      <CoffeeBeansBg variant="dark" />
+      <div style={{ maxWidth: "896px", margin: "0 auto" }}>
+        <p className="eyebrow text-[var(--red)]" style={{ textAlign: "center", marginBottom: "12px" }}>Find Us</p>
+        <h2 className="font-serif text-white" style={{ fontSize: "2rem", textAlign: "center", marginBottom: "32px" }}>
           Come Visit
         </h2>
 
-        <div className="grid grid-cols-3 gap-10">
-          {/* Address */}
-          <div>
-            <h3 className="eyebrow text-[var(--brown-light)] mb-4">Location</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px" }}>
+          {/* Address — spans 2 cols so Contact aligns with footer's Company column */}
+          <div style={{ gridColumn: "1 / 3" }}>
+            <h3 className="eyebrow text-[var(--brown-light)]" style={{ marginBottom: "16px" }}>Location</h3>
             <p className="text-white font-serif text-base mb-1">Cafe de la Republica</p>
             <p className="text-[var(--brown-light)] text-[13px] leading-relaxed">
               {address.split("\n").reduce<React.ReactNode[]>((acc, line, i, arr) => {
@@ -49,14 +51,14 @@ export default async function LocationSection() {
 
           {/* Hours */}
           <div>
-            <h3 className="eyebrow text-[var(--brown-light)] mb-4">Hours</h3>
-            <dl className="space-y-1">
+            <h3 className="eyebrow text-[var(--brown-light)]" style={{ marginBottom: "16px" }}>Hours</h3>
+            <dl style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
               {[
                 { day: "Mon – Fri", hours: hoursMF  },
                 { day: "Saturday",  hours: hoursSat },
                 { day: "Sunday",    hours: hoursSun },
               ].map(({ day, hours }) => (
-                <div key={day} className="flex justify-between text-[13px]">
+                <div key={day} style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
                   <dt className="text-[var(--brown-light)]">{day}</dt>
                   <dd className="text-white">{hours}</dd>
                 </div>
@@ -66,8 +68,8 @@ export default async function LocationSection() {
 
           {/* Contact */}
           <div>
-            <h3 className="eyebrow text-[var(--brown-light)] mb-4">Contact</h3>
-            <ul className="space-y-2 text-[13px]">
+            <h3 className="eyebrow text-[var(--brown-light)]" style={{ marginBottom: "16px" }}>Contact</h3>
+            <ul style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "13px" }}>
               <li>
                 <a
                   href={`tel:${phone.replace(/\s/g, "")}`}

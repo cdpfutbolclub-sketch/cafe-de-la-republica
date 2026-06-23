@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CoffeeBeansBg from "@/components/shared/CoffeeBeansBg";
 
 const PREVIEW_ITEMS = [
   { category: "Espresso",   name: "Espresso",      description: "Double shot, intense and full-bodied",         price: 2.50 },
@@ -9,24 +10,25 @@ const PREVIEW_ITEMS = [
 
 export default function MenuPreview() {
   return (
-    <section className="px-10 py-20" style={{ background: "var(--cream-warm)" }}>
-      <div className="max-w-4xl mx-auto">
-        <p className="eyebrow text-[var(--brown-light)] text-center mb-3">Cafe Menu</p>
-        <h2 className="font-serif text-[var(--brown)] text-center mb-12" style={{ fontSize: "2.2rem" }}>
+    <section className="relative" style={{ background: "var(--cream-warm)", paddingTop: "80px", paddingBottom: "80px", paddingLeft: "40px", paddingRight: "40px" }}>
+      <CoffeeBeansBg />
+      <div style={{ maxWidth: "896px", margin: "0 auto" }}>
+        <p className="eyebrow text-[var(--brown-light)]" style={{ textAlign: "center", marginBottom: "12px" }}>Cafe Menu</p>
+        <h2 className="font-serif text-[var(--brown)]" style={{ fontSize: "2.2rem", textAlign: "center", marginBottom: "48px" }}>
           A Taste of What Awaits
         </h2>
 
-        <ul className="grid grid-cols-2 gap-6 mb-10">
+        <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "24px", listStyle: "none", padding: 0, margin: 0 }}>
           {PREVIEW_ITEMS.map(item => (
             <li
               key={item.name}
-              className="px-7 py-6 rounded-lg"
-              style={{ background: "var(--cream)", border: "1px solid rgba(200,169,138,0.3)" }}
+              className="rounded-lg"
+              style={{ paddingTop: "28px", paddingBottom: "28px", paddingLeft: "32px", paddingRight: "32px", background: "var(--cream)", border: "1px solid rgba(200,169,138,0.3)" }}
             >
-              <p className="eyebrow text-[var(--red)] mb-2">{item.category}</p>
-              <div className="flex items-baseline justify-between mb-2">
-                <h3 className="font-serif text-[var(--brown)] text-lg">{item.name}</h3>
-                <span className="font-sans text-[var(--brown)] text-sm ml-4">
+              <p className="eyebrow text-[var(--red)]" style={{ marginBottom: "8px" }}>{item.category}</p>
+              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "8px" }}>
+                <h3 className="font-serif text-[var(--brown)]" style={{ fontSize: "1.1rem" }}>{item.name}</h3>
+                <span className="font-sans text-[var(--brown)]" style={{ fontSize: "0.875rem", marginLeft: "16px" }}>
                   €{item.price.toFixed(2)}
                 </span>
               </div>
@@ -37,11 +39,12 @@ export default function MenuPreview() {
           ))}
         </ul>
 
-        <div className="text-center">
+        <div style={{ textAlign: "center", marginTop: "48px" }}>
           <Link
             href="/menu"
-            className="inline-flex items-center gap-2 font-sans text-[10px] tracking-widest uppercase px-7 py-3 rounded-full transition-colors"
+            className="inline-flex items-center gap-2 font-sans text-[10px] tracking-widest uppercase rounded-full transition-colors"
             style={{
+              paddingTop: "12px", paddingBottom: "12px", paddingLeft: "28px", paddingRight: "28px",
               border: "1px solid var(--brown)",
               color: "var(--brown)",
             }}
