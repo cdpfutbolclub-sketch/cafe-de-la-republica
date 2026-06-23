@@ -226,8 +226,8 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Left panel — hidden on mobile */}
-      <div className="relative w-1/2 h-full overflow-hidden mob-hide" style={{ background: "#1a0a04" }}>
+      {/* Left panel — image background; on mobile becomes absolute full-screen bg */}
+      <div className="relative w-1/2 h-full overflow-hidden hero-left" style={{ background: "#1a0a04" }}>
         <div
           ref={leftBgRef}
           className="absolute inset-0"
@@ -238,13 +238,15 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
           )}
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(8,3,1,0.45) 0%, rgba(8,3,1,0.10) 100%)" }} />
           <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(192,57,43,0.18) 0%, transparent 55%)" }} />
+          {/* Extra overlay for mobile text readability */}
+          <div className="absolute inset-0 mob-show" style={{ display: "none", background: "rgba(8,3,1,0.42)" }} />
         </div>
       </div>
 
-      {/* Right panel — full width on mobile */}
-      <div className="relative w-1/2 h-full flex items-center justify-center mob-full" style={{ background: "#faf6f0" }}>
+      {/* Right panel — on mobile: full-width transparent overlay over the image */}
+      <div className="relative w-1/2 h-full flex items-center justify-center hero-right" style={{ background: "#faf6f0" }}>
         <CoffeeBeansBg />
-        <div ref={rightContentRef} className="w-full max-w-[340px] pl-16 pr-10 mob-px mob-center mob-pt-nav">
+        <div ref={rightContentRef} className="mob-dark-text w-full max-w-[340px] pl-16 pr-10 mob-px">
 
           <p className="eyebrow text-[var(--brown-light)] mb-5">
             {slide.origin} · {slide.region}
@@ -284,15 +286,15 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
         </div>
       </div>
 
-      {/* Center divider line */}
+      {/* Center divider line — hidden on mobile */}
       <div
-        className="absolute top-0 bottom-0 left-1/2 pointer-events-none"
+        className="absolute top-0 bottom-0 left-1/2 pointer-events-none hero-divider"
         style={{ width: "2px", background: "rgba(200,169,138,0.25)", transform: "translateX(-50%)" }}
       />
 
-      {/* Vertical dock nav */}
+      {/* Dock nav — vertical on desktop, horizontal at bottom on mobile */}
       <div
-        className="absolute flex flex-col items-center gap-[7px] z-30"
+        className="absolute flex flex-col items-center gap-[7px] z-30 hero-dock"
         style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
         onMouseMove={(e) => mouseY.set(e.pageY)}
         onMouseLeave={() => mouseY.set(Infinity)}

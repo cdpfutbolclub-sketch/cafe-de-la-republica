@@ -42,10 +42,44 @@ body { background: var(--cream); color: var(--brown); font-family: Georgia, seri
   text-transform: uppercase;
 }
 
+/* ── Desktop-only (hidden on mobile) ── */
+@media (max-width: 768px) { .desk-hide { display: none !important; } }
+
+/* ── Hero mobile layout ── */
+@media (max-width: 768px) {
+  .hero-left {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+  }
+  .hero-right {
+    width: 100% !important;
+    background: transparent !important;
+    position: relative !important;
+    z-index: 2 !important;
+  }
+  .hero-divider { display: none !important; }
+  .hero-dock {
+    flex-direction: row !important;
+    top: auto !important;
+    bottom: 90px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    gap: 10px !important;
+  }
+  /* Override CSS vars so text reads white on dark bg */
+  .mob-dark-text {
+    --brown: #ffffff;
+    --brown-light: rgba(200,169,138,0.95);
+    --tan: rgba(200,169,138,0.35);
+  }
+}
+
 /* ── Mobile utilities (max-width: 768px) ── */
 @media (max-width: 768px) {
   .mob-hide        { display: none !important; }
   .mob-show        { display: flex !important; }
+  .mob-show-grid   { display: grid !important; }
   .mob-full        { width: 100% !important; }
   .mob-stack       { flex-direction: column !important; }
   .mob-col-1       { grid-template-columns: 1fr !important; }

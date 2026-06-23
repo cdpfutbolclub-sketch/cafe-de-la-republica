@@ -95,43 +95,48 @@ export default function Nav() {
 
       {/* ── Mobile nav bar ── */}
       <nav
-        className="absolute top-0 left-0 right-0 z-50 mob-show"
+        className="absolute top-0 left-0 right-0 z-50 mob-show-grid"
         style={{
-          display: "none", /* overridden by mob-show on mobile */
+          display: "none",
           alignItems: "center",
-          justifyContent: "space-between",
+          gridTemplateColumns: "auto 1fr auto",
           paddingTop: "20px",
           paddingBottom: "20px",
           paddingLeft: "20px",
           paddingRight: "20px",
+          gap: "12px",
         }}
       >
-        <Link href="/" className="block">
-          <span className="text-white text-[11px] tracking-[0.28em] uppercase font-sans font-semibold">
+        {/* Left — hamburger */}
+        <button
+          aria-label="Open menu"
+          onClick={() => setMenuOpen(true)}
+          style={{ color: "white", fontSize: "26px", background: "none", border: "none", cursor: "pointer", padding: "4px", lineHeight: 1 }}
+        >
+          <IoMenuOutline />
+        </button>
+
+        {/* Center — logo */}
+        <Link href="/" style={{ textAlign: "center" }}>
+          <span className="text-white text-[10px] tracking-[0.28em] uppercase font-sans font-semibold">
             Cafe de la Republica
           </span>
         </Link>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <button
-            aria-label={`Cart, ${itemCount} items`}
-            onClick={openCart}
-            className="text-white text-[10px] tracking-[0.2em] uppercase font-sans rounded-full"
-            style={{
-              paddingTop: "8px", paddingBottom: "8px", paddingLeft: "16px", paddingRight: "16px",
-              background: "rgba(192,57,43,0.88)",
-              border: "1px solid rgba(255,100,80,0.3)",
-            }}
-          >
-            Cart ({itemCount})
-          </button>
-          <button
-            aria-label="Open menu"
-            onClick={() => setMenuOpen(true)}
-            style={{ color: "white", fontSize: "24px", background: "none", border: "none", cursor: "pointer", padding: "4px" }}
-          >
-            <IoMenuOutline />
-          </button>
-        </div>
+
+        {/* Right — cart */}
+        <button
+          aria-label={`Cart, ${itemCount} items`}
+          onClick={openCart}
+          className="text-white text-[10px] tracking-[0.2em] uppercase font-sans rounded-full"
+          style={{
+            paddingTop: "8px", paddingBottom: "8px", paddingLeft: "14px", paddingRight: "14px",
+            background: "rgba(192,57,43,0.88)",
+            border: "1px solid rgba(255,100,80,0.3)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Cart ({itemCount})
+        </button>
       </nav>
 
       {/* ── Mobile fullscreen drawer ── */}
