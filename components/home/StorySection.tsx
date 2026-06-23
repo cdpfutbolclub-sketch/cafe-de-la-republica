@@ -3,11 +3,11 @@ import CoffeeBeansBg from "@/components/shared/CoffeeBeansBg";
 
 export default function StorySection() {
   return (
-    <section id="story" className="flex" style={{ minHeight: "480px" }}>
-      {/* Left — gradient placeholder (decorative) */}
+    <section id="story" className="flex mob-stack" style={{ minHeight: "480px" }}>
+      {/* Left — gradient placeholder (hidden on mobile) */}
       <div
         aria-hidden="true"
-        className="w-1/2"
+        className="w-1/2 mob-hide"
         style={{ background: "linear-gradient(150deg, #2c1a0e 0%, #1a0a04 100%)" }}
       >
         <div className="w-full h-full" style={{ background: "rgba(192,57,43,0.08)" }} />
@@ -15,7 +15,7 @@ export default function StorySection() {
 
       {/* Right — text */}
       <div
-        className="w-1/2 flex items-center relative"
+        className="w-1/2 flex items-center relative mob-full mob-px mob-py"
         style={{ background: "var(--cream-warm)", paddingTop: "64px", paddingBottom: "64px", paddingLeft: "80px", paddingRight: "64px" }}
       >
         <CoffeeBeansBg />

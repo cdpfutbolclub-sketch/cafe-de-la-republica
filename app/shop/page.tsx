@@ -19,7 +19,7 @@ export default async function ShopPage() {
         </div>
       </div>
       <main style={{ paddingLeft: "40px", paddingRight: "40px", paddingTop: "64px", paddingBottom: "64px", background: "var(--cream)" }}>
-        <div style={{ maxWidth: "1024px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "32px" }}>
+        <div className="mob-col-2" style={{ maxWidth: "1024px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "32px" }}>
           {coffees.map(coffee => (
             <ProductCard key={coffee.slug} coffee={coffee} />
           ))}

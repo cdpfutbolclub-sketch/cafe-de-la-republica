@@ -10,7 +10,7 @@ const PREVIEW_ITEMS = [
 
 export default function MenuPreview() {
   return (
-    <section className="relative" style={{ background: "var(--cream-warm)", paddingTop: "80px", paddingBottom: "80px", paddingLeft: "40px", paddingRight: "40px" }}>
+    <section className="relative mob-px mob-py" style={{ background: "var(--cream-warm)", paddingTop: "80px", paddingBottom: "80px", paddingLeft: "40px", paddingRight: "40px" }}>
       <CoffeeBeansBg />
       <div style={{ maxWidth: "896px", margin: "0 auto" }}>
         <p className="eyebrow text-[var(--brown-light)]" style={{ textAlign: "center", marginBottom: "12px" }}>Cafe Menu</p>
@@ -18,7 +18,7 @@ export default function MenuPreview() {
           A Taste of What Awaits
         </h2>
 
-        <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "24px", listStyle: "none", padding: 0, margin: 0 }}>
+        <ul className="mob-col-1" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "24px", listStyle: "none", padding: 0, margin: 0 }}>
           {PREVIEW_ITEMS.map(item => (
             <li
               key={item.name}

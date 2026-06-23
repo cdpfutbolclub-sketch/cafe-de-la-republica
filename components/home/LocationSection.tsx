@@ -27,7 +27,7 @@ export default async function LocationSection() {
   } = { ...FALLBACK, ...settings };
 
   return (
-    <section id="location" className="relative" style={{ background: "#1a0a04", paddingTop: "48px", paddingBottom: "48px", paddingLeft: "40px", paddingRight: "40px" }}>
+    <section id="location" className="relative mob-px" style={{ background: "#1a0a04", paddingTop: "48px", paddingBottom: "48px", paddingLeft: "40px", paddingRight: "40px" }}>
       <CoffeeBeansBg variant="dark" />
       <div style={{ maxWidth: "896px", margin: "0 auto" }}>
         <p className="eyebrow text-[var(--red)]" style={{ textAlign: "center", marginBottom: "12px" }}>Find Us</p>
@@ -35,7 +35,7 @@ export default async function LocationSection() {
           Come Visit
         </h2>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px" }}>
+        <div className="mob-col-1" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "24px" }}>
           {/* Address — spans 2 cols so Contact aligns with footer's Company column */}
           <div style={{ gridColumn: "1 / 3" }}>
             <h3 className="eyebrow text-[var(--brown-light)]" style={{ marginBottom: "16px" }}>Location</h3>

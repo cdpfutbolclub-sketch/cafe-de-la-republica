@@ -226,8 +226,8 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Left panel — two divs slide simultaneously, no gap */}
-      <div className="relative w-1/2 h-full overflow-hidden" style={{ background: "#1a0a04" }}>
+      {/* Left panel — hidden on mobile */}
+      <div className="relative w-1/2 h-full overflow-hidden mob-hide" style={{ background: "#1a0a04" }}>
         <div
           ref={leftBgRef}
           className="absolute inset-0"
@@ -241,10 +241,10 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
         </div>
       </div>
 
-      {/* Right panel — static cream */}
-      <div className="relative w-1/2 h-full flex items-center justify-center" style={{ background: "#faf6f0" }}>
+      {/* Right panel — full width on mobile */}
+      <div className="relative w-1/2 h-full flex items-center justify-center mob-full" style={{ background: "#faf6f0" }}>
         <CoffeeBeansBg />
-        <div ref={rightContentRef} className="w-full max-w-[340px] pl-16 pr-10">
+        <div ref={rightContentRef} className="w-full max-w-[340px] pl-16 pr-10 mob-px mob-center mob-pt-nav">
 
           <p className="eyebrow text-[var(--brown-light)] mb-5">
             {slide.origin} · {slide.region}
@@ -258,7 +258,7 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
             {slide.roast} Roast
           </p>
 
-          <div className="flex flex-wrap gap-2 mb-7">
+          <div className="flex flex-wrap gap-2 mb-7 mob-center" style={{ justifyContent: "flex-start" }}>
             {slide.notes.map(note => (
               <span
                 key={note}

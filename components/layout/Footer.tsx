@@ -19,8 +19,8 @@ const companyLinks = [
 
 export default function Footer() {
   return (
-    <footer style={{ background: "#1a0a04", color: "#8b6650", paddingLeft: "40px", paddingRight: "40px", paddingTop: "48px", paddingBottom: "24px" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "40px", marginBottom: "40px", maxWidth: "896px", margin: "0 auto 40px auto" }}>
+    <footer className="mob-px" style={{ background: "#1a0a04", color: "#8b6650", paddingLeft: "40px", paddingRight: "40px", paddingTop: "48px", paddingBottom: "24px" }}>
+      <div className="mob-col-2 mob-gap-sm" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "40px", marginBottom: "40px", maxWidth: "896px", margin: "0 auto 40px auto" }}>
         <div>
           <p className="text-white text-[11px] tracking-[0.28em] uppercase font-sans font-semibold mb-1">
             Cafe de la Republica

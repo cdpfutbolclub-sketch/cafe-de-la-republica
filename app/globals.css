@@ -41,3 +41,24 @@ body { background: var(--cream); color: var(--brown); font-family: Georgia, seri
   letter-spacing: 0.4em;
   text-transform: uppercase;
 }
+
+/* ── Mobile utilities (max-width: 768px) ── */
+@media (max-width: 768px) {
+  .mob-hide        { display: none !important; }
+  .mob-show        { display: flex !important; }
+  .mob-full        { width: 100% !important; }
+  .mob-stack       { flex-direction: column !important; }
+  .mob-col-1       { grid-template-columns: 1fr !important; }
+  .mob-col-2       { grid-template-columns: repeat(2, 1fr) !important; }
+  .mob-px          { padding-left: 20px !important; padding-right: 20px !important; }
+  .mob-py          { padding-top: 48px !important; padding-bottom: 48px !important; }
+  .mob-pt-nav      { padding-top: 100px !important; }
+  .mob-text-sm     { font-size: 1.6rem !important; }
+  .mob-text-xs     { font-size: 1.2rem !important; }
+  .mob-center      { text-align: center !important; margin-left: auto !important; margin-right: auto !important; }
+  .mob-gap-sm      { gap: 16px !important; }
+  .mob-auto-h      { height: auto !important; min-height: unset !important; }
+  .mob-max-full    { max-width: 100% !important; }
+  .mob-pl-0        { padding-left: 20px !important; }
+  .mob-p-sm        { padding: 20px !important; }
+}
