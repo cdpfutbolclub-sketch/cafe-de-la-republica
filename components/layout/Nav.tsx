@@ -2,9 +2,10 @@
 import Link from "next/link";
 import LangToggle from "@/components/shared/LangToggle";
 import { useCartStore } from "@/store/cart";
-import { IoBagOutline, IoRestaurantOutline, IoMailOutline, IoInformationCircleOutline } from "react-icons/io5";
+import { IoBagOutline, IoRestaurantOutline, IoMailOutline, IoInformationCircleOutline, IoHomeOutline } from "react-icons/io5";
 
 const links = [
+  { href: "/",          label: "Home",      icon: <IoHomeOutline />,                gradientFrom: "#5c3317", gradientTo: "#c8a98a" },
   { href: "/shop",      label: "Shop",      icon: <IoBagOutline />,                gradientFrom: "#c0392b", gradientTo: "#ff6b4a" },
   { href: "/menu",      label: "Menu",      icon: <IoRestaurantOutline />,          gradientFrom: "#b8860b", gradientTo: "#f5c842" },
   { href: "/subscribe", label: "Subscribe", icon: <IoMailOutline />,                gradientFrom: "#2e8b57", gradientTo: "#7ee8a2" },
