@@ -185,14 +185,24 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
     return () => window.removeEventListener("keydown", handleKey);
   }, [next, prev]);
 
-  // Touch swipe — 50px minimum
+  // Touch swipe — horizontal on mobile, vertical on desktop
   useEffect(() => {
-    let touchStartY = 0;
-    const handleStart = (e: TouchEvent) => { touchStartY = e.touches[0].clientY; };
-    const handleEnd   = (e: TouchEvent) => {
-      const delta = touchStartY - e.changedTouches[0].clientY;
-      if (Math.abs(delta) < 50) return;
-      if (delta > 0) next(); else prev();
+    let startX = 0;
+    let startY = 0;
+    const handleStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    };
+    const handleEnd = (e: TouchEvent) => {
+      const dx = startX - e.changedTouches[0].clientX;
+      const dy = startY - e.changedTouches[0].clientY;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        if (Math.abs(dx) < 50) return;
+        if (dx > 0) next(); else prev();
+      } else {
+        if (Math.abs(dy) < 50) return;
+        if (dy > 0) next(); else prev();
+      }
     };
     window.addEventListener("touchstart", handleStart, { passive: true });
     window.addEventListener("touchend",   handleEnd,   { passive: true });

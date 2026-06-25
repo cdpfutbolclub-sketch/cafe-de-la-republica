@@ -67,20 +67,14 @@ export default function FeaturedCoffeesCarousel({ coffees }: { coffees: Coffee[]
       {/* Carousel + side arrows */}
       <div className="relative">
 
-        {/* Left gradient — mobile only */}
-        <div
-          className="mob-show absolute left-0 top-0 bottom-0 z-10 pointer-events-none"
-          style={{ display: "none", width: "80px", background: "linear-gradient(to right, var(--cream) 20%, transparent 100%)" }}
-        />
-
-        {/* Left arrow — desktop only */}
+        {/* Left arrow */}
         <AnimatePresence>
           {canPrev && (
             <motion.div
               key="left"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
-              className="desk-hide absolute left-3 top-0 bottom-0 z-10 flex items-center"
+              className="absolute left-3 top-0 bottom-0 z-10 flex items-center"
             >
               <button
                 onClick={() => api?.scrollPrev()}
@@ -93,20 +87,14 @@ export default function FeaturedCoffeesCarousel({ coffees }: { coffees: Coffee[]
           )}
         </AnimatePresence>
 
-        {/* Right gradient — mobile only */}
-        <div
-          className="mob-show absolute right-0 top-0 bottom-0 z-10 pointer-events-none"
-          style={{ display: "none", width: "80px", background: "linear-gradient(to left, var(--cream) 20%, transparent 100%)" }}
-        />
-
-        {/* Right arrow — desktop only */}
+        {/* Right arrow */}
         <AnimatePresence>
           {canNext && (
             <motion.div
               key="right"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
-              className="desk-hide absolute right-3 top-0 bottom-0 z-10 flex items-center"
+              className="absolute right-3 top-0 bottom-0 z-10 flex items-center"
             >
               <button
                 onClick={() => api?.scrollNext()}
