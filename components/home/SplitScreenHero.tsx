@@ -5,11 +5,13 @@ import gsap from "gsap";
 import Link from "next/link";
 import Image from "next/image";
 import CoffeeBeansBg from "@/components/shared/CoffeeBeansBg";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 function DockDot({
-  mouseY, active, dotColor, onClick, onHover, ariaLabel,
+  motionVal, horizontal, active, dotColor, onClick, onHover, ariaLabel,
 }: {
-  mouseY: MotionValue<number>;
+  motionVal: MotionValue<number>;
+  horizontal?: boolean;
   active: boolean;
   dotColor: string;
   onClick: () => void;
@@ -18,12 +20,15 @@ function DockDot({
 }) {
   const ref = useRef<HTMLButtonElement>(null);
 
-  const distance = useTransform(mouseY, (val) => {
-    const bounds = ref.current?.getBoundingClientRect() ?? { y: 0, height: 0 };
-    return val - bounds.y - bounds.height / 2;
+  const distance = useTransform(motionVal, (val) => {
+    const el = ref.current?.getBoundingClientRect() ?? { x: 0, y: 0, width: 0, height: 0 };
+    return horizontal
+      ? val - el.x - el.width  / 2
+      : val - el.y - el.height / 2;
   });
 
-  const sizeSync = useTransform(distance, [-100, 0, 100], [active ? 38 : 24, active ? 60 : 48, active ? 38 : 24]);
+  const range = horizontal ? [-60, 0, 60] : [-100, 0, 100];
+  const sizeSync = useTransform(distance, range, [active ? 32 : 20, active ? 52 : 40, active ? 32 : 20]);
   const size = useSpring(sizeSync, { mass: 0.1, stiffness: 150, damping: 12 });
 
   return (
@@ -44,6 +49,7 @@ function DockDot({
         opacity: active ? 1 : 0.55,
         flexShrink: 0,
         cursor: "pointer",
+        touchAction: "manipulation",
       }}
     />
   );
@@ -122,6 +128,8 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
   const [activeIndex, setActiveIndex] = useState(0);
   const [hovered,     setHovered]     = useState(false);
   const mouseY           = useMotionValue(Infinity);
+  const mouseX           = useMotionValue(Infinity);
+  const isMobile         = useIsMobile();
   const inBottomZoneRef  = useRef(false);
   const sectionRef      = useRef<HTMLElement>(null);
   const leftBgRef       = useRef<HTMLDivElement>(null);
@@ -185,30 +193,39 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
     return () => window.removeEventListener("keydown", handleKey);
   }, [next, prev]);
 
-  // Touch swipe — horizontal on mobile, vertical on desktop
+  // Touch swipe — attached to section so we can preventDefault on move
   useEffect(() => {
-    let startX = 0;
-    let startY = 0;
-    const handleStart = (e: TouchEvent) => {
+    const section = sectionRef.current;
+    if (!section) return;
+    let startX = 0, startY = 0;
+
+    const onStart = (e: TouchEvent) => {
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
     };
-    const handleEnd = (e: TouchEvent) => {
+    const onMove = (e: TouchEvent) => {
+      // Block browser scroll/back-gesture while swiping the hero
+      e.preventDefault();
+    };
+    const onEnd = (e: TouchEvent) => {
       const dx = startX - e.changedTouches[0].clientX;
       const dy = startY - e.changedTouches[0].clientY;
-      if (Math.abs(dx) > Math.abs(dy)) {
-        if (Math.abs(dx) < 50) return;
+      if (Math.abs(dx) >= Math.abs(dy)) {
+        if (Math.abs(dx) < 40) return;
         if (dx > 0) next(); else prev();
       } else {
-        if (Math.abs(dy) < 50) return;
+        if (inBottomZoneRef.current) return;
+        if (Math.abs(dy) < 40) return;
         if (dy > 0) next(); else prev();
       }
     };
-    window.addEventListener("touchstart", handleStart, { passive: true });
-    window.addEventListener("touchend",   handleEnd,   { passive: true });
+    section.addEventListener("touchstart", onStart, { passive: true });
+    section.addEventListener("touchmove",  onMove,  { passive: false });
+    section.addEventListener("touchend",   onEnd,   { passive: true });
     return () => {
-      window.removeEventListener("touchstart", handleStart);
-      window.removeEventListener("touchend",   handleEnd);
+      section.removeEventListener("touchstart", onStart);
+      section.removeEventListener("touchmove",  onMove);
+      section.removeEventListener("touchend",   onEnd);
     };
   }, [next, prev]);
 
@@ -305,14 +322,17 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
       {/* Dock nav — vertical on desktop, horizontal at bottom on mobile */}
       <div
         className="absolute flex flex-col items-center gap-[7px] z-30 hero-dock"
-        style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+        style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)", touchAction: "manipulation" }}
         onMouseMove={(e) => mouseY.set(e.pageY)}
-        onMouseLeave={() => mouseY.set(Infinity)}
+        onMouseLeave={() => { mouseY.set(Infinity); }}
+        onTouchMove={(e) => mouseX.set(e.touches[0].clientX)}
+        onTouchEnd={() => mouseX.set(Infinity)}
       >
         {SLIDES.map((s, i) => (
           <DockDot
             key={s.id}
-            mouseY={mouseY}
+            motionVal={isMobile ? mouseX : mouseY}
+            horizontal={isMobile}
             active={i === activeIndex}
             dotColor={s.dotColor}
             onClick={() => goTo(i, i > activeIndex ? "forward" : "backward")}
