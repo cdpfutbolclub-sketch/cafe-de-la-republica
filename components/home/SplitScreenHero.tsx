@@ -27,8 +27,8 @@ function DockDot({
       : val - el.y - el.height / 2;
   });
 
-  const range = horizontal ? [-60, 0, 60] : [-100, 0, 100];
-  const sizeSync = useTransform(distance, range, [active ? 32 : 20, active ? 52 : 40, active ? 32 : 20]);
+  const range = horizontal ? [-80, 0, 80] : [-100, 0, 100];
+  const sizeSync = useTransform(distance, range, [active ? 28 : 16, active ? 64 : 50, active ? 28 : 16]);
   const size = useSpring(sizeSync, { mass: 0.1, stiffness: 150, damping: 12 });
 
   return (
@@ -127,10 +127,11 @@ type Slide = typeof SLIDES[number];
 export default function SplitScreenHero({ images = {} }: { images?: Record<string, string> }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [hovered,     setHovered]     = useState(false);
-  const mouseY           = useMotionValue(Infinity);
-  const mouseX           = useMotionValue(Infinity);
-  const isMobile         = useIsMobile();
-  const inBottomZoneRef  = useRef(false);
+  const mouseY            = useMotionValue(Infinity);
+  const mouseX            = useMotionValue(Infinity);
+  const isMobile          = useIsMobile();
+  const inBottomZoneRef   = useRef(false);
+  const touchedDotIdxRef  = useRef<number | null>(null);
   const sectionRef      = useRef<HTMLElement>(null);
   const leftBgRef       = useRef<HTMLDivElement>(null);
   const rightContentRef = useRef<HTMLDivElement>(null);
@@ -146,23 +147,28 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
     const content = rightContentRef.current;
     if (!bg || !content) { isAnimatingRef.current = false; return; }
 
-    const exitY     = direction === "forward" ? "-100%" : "100%";
-    const enterY    = direction === "forward" ?  "100%" : "-100%";
+    const axis = isMobile ? "x" : "y";
+    // Clear any leftover transform on the other axis
+    gsap.set(bg,      { [isMobile ? "y" : "x"]: 0 });
+    gsap.set(content, { [isMobile ? "y" : "x"]: 0 });
+
+    const exitVal   = direction === "forward" ? "-100%" : "100%";
+    const enterVal  = direction === "forward" ?  "100%" : "-100%";
     const textExit  = direction === "forward" ? -60 : 60;
     const textEnter = direction === "forward" ?  60 : -60;
 
     const tl = gsap.timeline({ onComplete: () => { isAnimatingRef.current = false; } });
-    tl.to(content, { y: textExit, duration: 0.35, ease: "power2.in"    }, 0);
-    tl.to(content, { opacity: 0,  duration: 0.15, ease: "none"         }, 0.20);
-    tl.to(bg,      { y: exitY,    duration: 0.60, ease: "power2.inOut" }, 0);
+    tl.to(content, { [axis]: textExit, duration: 0.35, ease: "power2.in"    }, 0);
+    tl.to(content, { opacity: 0,       duration: 0.15, ease: "none"         }, 0.20);
+    tl.to(bg,      { [axis]: exitVal,  duration: 0.60, ease: "power2.inOut" }, 0);
     tl.call(() => {
       setActiveIndex(newIndex);
-      gsap.set(bg,      { y: enterY });
-      gsap.set(content, { y: textEnter, opacity: 0 });
+      gsap.set(bg,      { [axis]: enterVal });
+      gsap.set(content, { [axis]: textEnter, opacity: 0 });
     });
-    tl.to(bg,      { y: "0%", duration: 0.60, ease: "power2.inOut" });
-    tl.to(content, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, "-=0.35");
-  }, [activeIndex]);
+    tl.to(bg,      { [axis]: "0%", duration: 0.60, ease: "power2.inOut" });
+    tl.to(content, { opacity: 1, [axis]: 0, duration: 0.45, ease: "power2.out" }, "-=0.35");
+  }, [activeIndex, isMobile]);
 
   const next = useCallback(() => goTo((activeIndex + 1) % SLIDES.length, "forward"),  [goTo, activeIndex]);
   const prev = useCallback(() => goTo((activeIndex - 1 + SLIDES.length) % SLIDES.length, "backward"), [goTo, activeIndex]);
@@ -325,8 +331,27 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
         style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)", touchAction: "manipulation" }}
         onMouseMove={(e) => mouseY.set(e.pageY)}
         onMouseLeave={() => { mouseY.set(Infinity); }}
-        onTouchMove={(e) => mouseX.set(e.touches[0].clientX)}
-        onTouchEnd={() => mouseX.set(Infinity)}
+        onTouchMove={(e) => {
+          const x = e.touches[0].clientX;
+          mouseX.set(x);
+          // Find which dot the finger is closest to
+          const buttons = (e.currentTarget as HTMLElement).querySelectorAll("button");
+          let closest = { idx: 0, dist: Infinity };
+          buttons.forEach((btn, i) => {
+            const rect = btn.getBoundingClientRect();
+            const dist = Math.abs(x - (rect.x + rect.width / 2));
+            if (dist < closest.dist) closest = { idx: i, dist };
+          });
+          touchedDotIdxRef.current = closest.idx;
+        }}
+        onTouchEnd={() => {
+          mouseX.set(Infinity);
+          const idx = touchedDotIdxRef.current;
+          touchedDotIdxRef.current = null;
+          if (idx !== null && idx !== activeIndex) {
+            goTo(idx, idx > activeIndex ? "forward" : "backward");
+          }
+        }}
       >
         {SLIDES.map((s, i) => (
           <DockDot
