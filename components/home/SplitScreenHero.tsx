@@ -132,7 +132,9 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
   const isMobile          = useIsMobile();
   const inBottomZoneRef   = useRef(false);
   const touchedDotIdxRef  = useRef<number | null>(null);
+  const touchInDockRef    = useRef(false);
   const sectionRef      = useRef<HTMLElement>(null);
+  const dockRef         = useRef<HTMLDivElement>(null);
   const leftBgRef       = useRef<HTMLDivElement>(null);
   const rightContentRef = useRef<HTMLDivElement>(null);
   const isAnimatingRef  = useRef(false);
@@ -208,12 +210,15 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
     const onStart = (e: TouchEvent) => {
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
+      // Track whether touch began inside the dock so we can skip swipe handling
+      touchInDockRef.current = dockRef.current?.contains(e.target as Node) ?? false;
     };
     const onMove = (e: TouchEvent) => {
-      // Block browser scroll/back-gesture while swiping the hero
       e.preventDefault();
     };
     const onEnd = (e: TouchEvent) => {
+      // Dock handles its own navigation — don't also fire a swipe
+      if (touchInDockRef.current) return;
       const dx = startX - e.changedTouches[0].clientX;
       const dy = startY - e.changedTouches[0].clientY;
       if (Math.abs(dx) >= Math.abs(dy)) {
@@ -256,15 +261,16 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
     <section
       ref={sectionRef}
       className="relative w-full h-screen overflow-hidden flex"
+      style={{ overflow: "hidden" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       {/* Left panel — image background; on mobile becomes absolute full-screen bg */}
-      <div className="relative w-1/2 h-full overflow-hidden hero-left" style={{ background: "#1a0a04" }}>
+      <div className="relative w-1/2 h-full overflow-hidden hero-left" style={{ background: "#1a0a04", overflow: "hidden" }}>
         <div
           ref={leftBgRef}
           className="absolute inset-0"
-          style={{ background: SLIDES[activeIndex].bg }}
+          style={{ background: SLIDES[activeIndex].bg, willChange: "transform" }}
         >
           {images[SLIDES[activeIndex].id] && (
             <Image src={images[SLIDES[activeIndex].id]} alt={SLIDES[activeIndex].name} fill sizes="50vw" unoptimized className="object-cover" style={{ opacity: 0.75 }} priority={SLIDES[activeIndex].id === "ethiopia"} />
@@ -279,7 +285,7 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
       {/* Right panel — on mobile: full-width transparent overlay over the image */}
       <div className="relative w-1/2 h-full flex items-center justify-center hero-right" style={{ background: "#faf6f0" }}>
         <CoffeeBeansBg />
-        <div ref={rightContentRef} className="mob-dark-text w-full max-w-[340px] pl-16 pr-10 mob-px">
+        <div ref={rightContentRef} className="mob-dark-text w-full max-w-[340px] pl-16 pr-10 mob-px" style={{ willChange: "transform" }}>
 
           <p className="eyebrow text-[var(--brown-light)] mb-5">
             {slide.origin} · {slide.region}
@@ -327,14 +333,26 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
 
       {/* Dock nav — vertical on desktop, horizontal at bottom on mobile */}
       <div
+        ref={dockRef}
         className="absolute flex flex-col items-center gap-[7px] z-30 hero-dock"
         style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)", touchAction: "manipulation" }}
         onMouseMove={(e) => mouseY.set(e.pageY)}
         onMouseLeave={() => { mouseY.set(Infinity); }}
+        onTouchStart={(e) => {
+          // Seed the closest dot on first touch so a pure tap also selects correctly
+          const x = e.touches[0].clientX;
+          const buttons = (e.currentTarget as HTMLElement).querySelectorAll("button");
+          let closest = { idx: 0, dist: Infinity };
+          buttons.forEach((btn, i) => {
+            const rect = btn.getBoundingClientRect();
+            const dist = Math.abs(x - (rect.x + rect.width / 2));
+            if (dist < closest.dist) closest = { idx: i, dist };
+          });
+          touchedDotIdxRef.current = closest.idx;
+        }}
         onTouchMove={(e) => {
           const x = e.touches[0].clientX;
           mouseX.set(x);
-          // Find which dot the finger is closest to
           const buttons = (e.currentTarget as HTMLElement).querySelectorAll("button");
           let closest = { idx: 0, dist: Infinity };
           buttons.forEach((btn, i) => {
@@ -348,9 +366,8 @@ export default function SplitScreenHero({ images = {} }: { images?: Record<strin
           mouseX.set(Infinity);
           const idx = touchedDotIdxRef.current;
           touchedDotIdxRef.current = null;
-          if (idx !== null && idx !== activeIndex) {
-            goTo(idx, idx > activeIndex ? "forward" : "backward");
-          }
+          // goTo already guards against animating or same-slide redundancy
+          if (idx !== null) goTo(idx, idx > activeIndex ? "forward" : "backward");
         }}
       >
         {SLIDES.map((s, i) => (

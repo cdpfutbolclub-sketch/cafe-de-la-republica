@@ -33,7 +33,7 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { background: var(--cream); color: var(--brown); font-family: Georgia, serif; }
+body { background: var(--cream); color: var(--brown); font-family: Georgia, serif; overflow-x: hidden; }
 
 .eyebrow {
   font-family: "Helvetica Neue", Arial, sans-serif;
